@@ -1,0 +1,6 @@
+@ComponentGallery.Server_HostAddress = http://localhost:5074
+
+GET {{ComponentGallery.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
