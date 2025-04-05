@@ -1,6 +1,5 @@
 ﻿using ComponentGallery.Server.Features.Components.GetComponentDetails;
 using ComponentGallery.Server.Features.Components.GetComponentsList;
-using ComponentGallery.Server.Features.Components.Repositories;
 
 namespace ComponentGallery.Server.Features.Components;
 
@@ -16,7 +15,5 @@ public static class DependencyInjectionExtensions
     {
         services.AddTransient<GetComponentDetailsHandler>();
         services.AddTransient<GetComponentsListHandler>();
-
-        services.AddTransient<IComponentRepository, InMemoryComponentRepository>();
     }
 }
