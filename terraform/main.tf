@@ -1,12 +1,12 @@
 resource "azurerm_resource_group" "rg" {
-  name     = var.resource_group_name
-  location = var.resource_group_location
+  name     = "pc-component-gallery-rg"
+  location = "polandcentral"
 }
 
 
 # SQL Server
 resource "azurerm_mssql_server" "pc_component_gallery_server" {
-  name                          = var.sql_server_name
+  name                          = "pc-component-gallery-sql-server"
   resource_group_name           = azurerm_resource_group.rg.name
   location                      = azurerm_resource_group.rg.location
   version                       = "12.0"
@@ -25,11 +25,11 @@ resource "azurerm_mssql_firewall_rule" "allow_azure_services" {
 
 # SQL Database
 resource "azurerm_mssql_database" "pc_component_gallery_database" {
-  name      = var.sql_database_name
+  name      = "pc-component-gallery-db"
   server_id = azurerm_mssql_server.pc_component_gallery_server.id
 
-  sku_name    = var.sql_database_sku
-  max_size_gb = var.sql_database_max_size_gb
+  sku_name    = "Basic"
+  max_size_gb = 2
 }
 
 
@@ -79,16 +79,15 @@ resource "azurerm_storage_account" "pc_component_gallery_storage" {
   min_tls_version          = "TLS1_2"
 
   network_rules {
-    default_action             = "Deny"
-    bypass                     = ["AzureServices"]
-    ip_rules                   = []
-    virtual_network_subnet_ids = []
+    default_action = "Deny"
+    bypass         = ["AzureServices"]
+    ip_rules       = var.storage_account_allowed_ip_addresses
   }
 }
 
-# Blob container (prywatny)
+# Blob container
 resource "azurerm_storage_container" "pc_component_gallery_container" {
-  name                  = "pc-component-gallery-container"
+  name                  = "pc-component-models"
   storage_account_id    = azurerm_storage_account.pc_component_gallery_storage.id
   container_access_type = "private"
 }
