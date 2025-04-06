@@ -81,7 +81,6 @@ resource "azurerm_storage_account" "pc_component_gallery_storage" {
   network_rules {
     default_action = "Deny"
     bypass         = ["AzureServices"]
-    ip_rules       = var.storage_account_allowed_ip_addresses
   }
 }
 

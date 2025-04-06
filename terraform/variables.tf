@@ -11,10 +11,3 @@ variable "sql_admin_password" {
   description = "The administrator password for the SQL Server."
   sensitive   = true
 }
-
-# Allowed IPs for storage account
-variable "storage_account_allowed_ip_addresses" {
-  description = "List of allowed public IP addresses for accessing the storage account"
-  type        = list(string)
-  default     = []
-}
