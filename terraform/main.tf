@@ -30,6 +30,9 @@ resource "azurerm_mssql_database" "pc_component_gallery_database" {
 
   sku_name    = "Basic"
   max_size_gb = 2
+
+  storage_account_type = "Local"
+  zone_redundant       = false
 }
 
 
@@ -71,22 +74,26 @@ resource "azurerm_linux_web_app" "pc_component_gallery_app_service" {
 
 # Storage Account
 resource "azurerm_storage_account" "pc_component_gallery_storage" {
-  name                     = "pccomponentgallerystorage69420"
+  name                     = "pccomponentstorage420696"
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
 
+  access_tier  = "Hot"
+  account_kind = "StorageV2"
+
   network_rules {
     default_action = "Deny"
     bypass         = ["AzureServices"]
+    ip_rules       = var.storage_account_ip_rules
   }
 }
 
 # Blob container
 resource "azurerm_storage_container" "pc_component_gallery_container" {
   name                  = "pc-component-models"
-  storage_account_id    = azurerm_storage_account.pc_component_gallery_storage.id
+  storage_account_name  = azurerm_storage_account.pc_component_gallery_storage.name
   container_access_type = "private"
 }
