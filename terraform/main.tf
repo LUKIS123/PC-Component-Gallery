@@ -83,12 +83,6 @@ resource "azurerm_storage_account" "pc_component_gallery_storage" {
 
   access_tier  = "Hot"
   account_kind = "StorageV2"
-
-  network_rules {
-    default_action = "Deny"
-    bypass         = ["AzureServices"]
-    ip_rules       = var.storage_account_ip_rules
-  }
 }
 
 # Blob container
