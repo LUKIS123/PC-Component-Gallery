@@ -3,15 +3,23 @@ import { useComponentsDataService } from "./services/components-data-service";
 import { useState } from "react";
 import { Box, Button, CardBody, Heading, Input, Select, SimpleGrid, VStack, Image, Stack, Text, Badge, LocaleProvider, FormatNumber } from "@chakra-ui/react";
 import { Link, useParams } from "react-router";
+import { useComponentTypeDataService } from "./services/component-type-data-service";
 
 export function ComponentsListPage() {
   const dataService = useComponentsDataService();
+  const componentTypesDataService = useComponentTypeDataService();
   const [page] = useState(0);
   const { typeId } = useParams();
   const { data: components, isLoading: isComponentsLoading } = useQuery({
     queryKey: ["components", page],
     queryFn: () => dataService.getComponents(page, typeId ? parseInt(typeId, 10) : 0),
   });
+
+  const { data: componentType, isLoading: isComponentTypeLoading } = useQuery({
+    queryKey: ["componentType"],
+    queryFn: () => componentTypesDataService.getComponentTypeById(typeId ? parseInt(typeId, 10) : 0),
+  });
+
 
   if (isComponentsLoading) {
     return <VStack>Loading...</VStack>;
@@ -27,7 +35,12 @@ export function ComponentsListPage() {
       <Box
         position="relative"
         height="300px"
-        backgroundImage="url('https://static.vecteezy.com/system/resources/previews/003/800/708/non_2x/quantum-computer-large-data-processing-database-concept-cpu-isometric-banner-central-computer-processors-cpu-concept-digital-chip-futuristic-microchip-processor-vector.jpg')"
+        // backgroundImage="url('https://static.vecteezy.com/system/resources/previews/003/800/708/non_2x/quantum-computer-large-data-processing-database-concept-cpu-isometric-banner-central-computer-processors-cpu-concept-digital-chip-futuristic-microchip-processor-vector.jpg')"
+        // backgroundImage="url('https://www.pcworld.com/wp-content/uploads/2024/01/best-graphics-cards-banner-100815257-orig.jpg?quality=50&strip=all')"
+        // backgroundImage="url('https://png.pngtree.com/thumb_back/fw800/background/20240525/pngtree-motherboard-background-design-image_15805164.jpg')"
+        // backgroundImage="url('https://as1.ftcdn.net/v2/jpg/03/52/65/22/1000_F_352652202_gle5fJmbH5GXns32aosr5j8WeBpVLBUs.jpg')"
+        // backgroundImage="url('https://image.semiconductor.samsung.com/image/samsung/p6/semiconductor/consumer-storage/kv/kv-product-internalssd-970-EVOPlus-pc.png?$ORIGIN_PNG$')"
+        backgroundImage={`url('${componentType!.imageUrl}')`}
         backgroundSize="cover"
         backgroundPosition="center"
         borderRadius="md"
@@ -48,7 +61,7 @@ export function ComponentsListPage() {
           color="white"
           fontSize="3xl"
         >
-          CPUs
+          {componentType?.name}
         </Heading>
       </Box>
 

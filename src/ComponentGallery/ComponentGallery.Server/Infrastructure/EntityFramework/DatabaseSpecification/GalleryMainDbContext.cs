@@ -6,4 +6,5 @@ public class GalleryMainDbContext(DbContextOptions<GalleryMainDbContext> options
 {
     public DbSet<ComponentEntity> Components { get; set; }
     public DbSet<SpecificationEntity> Specifications { get; set; }
+    public DbSet<ComponentTypeEntity> ComponentTypes { get; set; }
 }

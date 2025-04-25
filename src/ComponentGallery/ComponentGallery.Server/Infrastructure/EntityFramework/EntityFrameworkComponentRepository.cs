@@ -34,6 +34,38 @@ public class EntityFrameworkComponentRepository(GalleryMainDbContext dbContext) 
             .ToList();
     }
 
+    public async Task<ComponentTypeDetails?> GetComponentTypeDetailsByIdAsync(int typeId, CancellationToken cancellationToken)
+    {
+        var entity = await dbContext.ComponentTypes
+            .SingleOrDefaultAsync(ct => ct.ComponentTypeId == typeId, cancellationToken);
+
+        if (entity == null)
+            return null;
+
+        return MapToComponentTypeDetails(entity);
+
+    }
+
+    public async Task<List<ComponentTypeDetails>> GetComponentTypeDetailsAsync(CancellationToken cancellationToken)
+    {
+        var result = await dbContext.ComponentTypes
+            .ToListAsync();
+
+        return result
+            .Select(MapToComponentTypeDetails)
+            .ToList();
+
+    }
+
+
+    private static ComponentTypeDetails MapToComponentTypeDetails(ComponentTypeEntity componentType)
+    {
+        return new(
+            componentType.ComponentTypeId,
+            componentType.Name,
+            componentType.ImageUrl);
+    }
+
     private static ComputerComponent MapToComputerComponent(ComponentEntity component)
     {
         return new(
