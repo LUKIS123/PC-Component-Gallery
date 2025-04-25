@@ -15,7 +15,7 @@ function Scene() {
 
         const exrLoader = new EXRLoader();
 
-        exrLoader.load('./assets/photo_studio_01_4k.exr', (texture) => {
+        exrLoader.load('/assets/photo_studio_01_4k.exr', (texture) => {
             texture.mapping = THREE.EquirectangularReflectionMapping;
             test.scene.environment = texture;
             // test.scene.background = texture;
@@ -24,7 +24,7 @@ function Scene() {
         const gltfLoader = new GLTFLoader();
 
         gltfLoader.load(
-            './assets/am4cpu/am4cpu.gltf',
+            '/assets/am4cpu/am4cpu.gltf',
             (gltfScene) => {
                 console.log('Model loaded:', gltfScene);
                 gltfScene.scene.traverse(node => {
@@ -46,11 +46,8 @@ function Scene() {
     }, []);
 
     return (
-        <div>
-            <div>Three.js App</div>
-            <div id="canvasDiv" style={{ height: '300px', width: '300px' }}>
-                <canvas id="myThreeJsCanvas"></canvas>
-            </div>
+        <div id="canvasDiv" style={{ height: '100%', width: '100%' }}>
+            <canvas id="myThreeJsCanvas"></canvas>
         </div>
     );
 }

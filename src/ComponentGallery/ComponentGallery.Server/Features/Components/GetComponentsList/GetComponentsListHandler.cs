@@ -7,8 +7,8 @@ internal class GetComponentsListHandler(IComponentRepository componentRepository
 {
     private const int PageSize = 10;
 
-    public async Task<List<ComputerComponent>> Handle(int pageIndex, CancellationToken cancellationToken)
+    public async Task<List<ComputerComponent>> Handle(int pageIndex, int? typeId, CancellationToken cancellationToken)
     {
-        return await componentRepository.GetComponentsListAsync(pageIndex, PageSize, cancellationToken);
+        return await componentRepository.GetComponentsListAsync(pageIndex, typeId, PageSize, cancellationToken);
     }
 }

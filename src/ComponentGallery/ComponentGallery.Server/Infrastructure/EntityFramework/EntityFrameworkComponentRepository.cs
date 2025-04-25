@@ -19,9 +19,10 @@ public class EntityFrameworkComponentRepository(GalleryMainDbContext dbContext) 
             : null;
     }
 
-    public async Task<List<ComputerComponent>> GetComponentsListAsync(int pageIndex, int pageSize, CancellationToken cancellationToken)
+    public async Task<List<ComputerComponent>> GetComponentsListAsync(int pageIndex, int? typeId, int pageSize, CancellationToken cancellationToken)
     {
         var result = await dbContext.Components
+            .Where(c => !typeId.HasValue || c.Type == typeId)
             .AsNoTracking()
             .Include(c => c.Specifications)
             .Skip(pageIndex * pageSize)
@@ -41,6 +42,7 @@ public class EntityFrameworkComponentRepository(GalleryMainDbContext dbContext) 
             component.Description,
             component.Type,
             component.Price,
+            component.ImageUrl,
             component.Specifications.ToDictionary(x => x.Key, x => x.Value));
     }
 }

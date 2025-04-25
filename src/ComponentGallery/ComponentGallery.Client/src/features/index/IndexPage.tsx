@@ -1,21 +1,171 @@
 import Scene from "@/components/ui/3dscene";
-import { Button, Heading, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Grid, Heading, Stack, Text, Image } from "@chakra-ui/react";
 import { Link } from "react-router";
+
 
 export function IndexPage() {
   return (
-    <Stack>
-      <Heading size="2xl" as={"p"}>
-        Welcome to the Component Gallery
-      </Heading>
-      <Text>
-        This is a collection of reusable components that you can use in your
-        applications.
-      </Text>
-      <Link to={"/components"}>
-        <Button variant="subtle">ComponentsPage</Button>
-      </Link>
-      <Scene />
+    <Stack h="100vh" direction="column" >
+      <Box bg="black" color="white" >
+        {/* Hero Section */}
+        <Box
+          position="relative"
+          // w="100vw"
+
+          // minHeight="50vh"
+          overflow="hidden"
+        >
+          <Image
+            src="https://media.istockphoto.com/id/483147081/photo/futuristic-circuit-board-blue-with-electrons.jpg?s=612x612&w=0&k=20&c=cOlFe3m-qcm4zTmCKxVmX4huAlW9mpwaR2oPZhZjqK0=" // Use a high-quality image of a PC setup here
+            alt="PC Setup"
+            width="100%"
+            height="300px"
+            objectFit="cover"
+            filter="brightness(0.6)"
+          />
+          <Box
+            position="absolute"
+            top="50%"
+            left="50%"
+            transform="translate(-50%, -50%)"
+            textAlign="center"
+            color="white"
+          >
+            <Heading
+              as="h1"
+              size="5xl" // Larger size for prominence
+              mb={4}
+              color="cyan.400"
+              textShadow="0px 0px 5px rgb(0, 0, 0), 0px 0px 10px rgb(255, 255, 255)"
+            >
+              PC Component Gallery
+            </Heading>
+            <Text fontSize="xl" mb="6" mt="20">
+              Browse and explore the best PC components for your next build.
+            </Text>
+          </Box>
+        </Box>
+
+        {/* Introduction Section */}
+        <Stack gap={8} w={['100%', '75%']} mx="auto" p={4}>
+          <Heading as="h2" size="xl" color="white">
+            What is the PC Component Gallery?
+          </Heading>
+          <Text fontSize="lg" color="gray.300">
+            Discover and compare the latest PC components for building your dream computer.
+            Whether you're a beginner or an expert, our gallery provides all the info you need to make informed decisions.
+          </Text>
+        </Stack>
+
+        {/* Featured Categories Section */}
+        <Stack gap={8} w={['100%', '75%']} mx="auto" p={4}>
+          <Heading as="h2" size="lg" color="white" textAlign="center">
+            Explore Categories
+          </Heading>
+          <Stack direction="row" gap={8} justify="center" wrap="wrap">
+            {/* Category Buttons with Background Images */}
+            <Link to="/components/1">
+              <Button
+                as="div"  // Ensure the button is a div so that bgImage can apply correctly
+                variant="solid"
+                color="white"
+                bgImage="url('https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2505503-ryzen-7-7800x3d-og.jpg')"
+                bgSize="cover"
+                bgPos="center"
+                h="200px"
+                w="200px"
+                _hover={{ opacity: 0.8 }}
+                fontSize="xl"
+                fontWeight="bold"
+                colorScheme="cyan"
+                textAlign="center"
+              >
+                CPU
+              </Button>
+            </Link>
+            <Link to="/components/4">
+              <Button
+                as="div"  // Ensure the button is a div so that bgImage can apply correctly
+                variant="solid"
+                color="white"
+                bgImage="url('https://www.pcgamesn.com/wp-content/sites/pcgamesn/2021/09/geforce-rtx-3080-ti-product-gallery-full-screen-3840-3_7b0335b3-f6b3-45d5-89f2-206d2a4e190e-prv-550x309.jpg')"
+                bgSize="cover"
+                bgPos="center"
+                h="200px"
+                w="200px"
+                _hover={{ opacity: 0.8 }}
+                fontSize="xl"
+                fontWeight="bold"
+                colorScheme="cyan"
+                textAlign="center"
+              >
+                GPU
+              </Button>
+            </Link>
+            <Link to="/components/2">
+              <Button
+                as="div"  // Ensure the button is a div so that bgImage can apply correctly
+                variant="solid"
+                color="white"
+                bgImage="url('https://io.bikegremlin.com/wp-content/uploads/2024/07/modern-pc-computer-motherboard.jpg')"
+                bgSize="cover"
+                bgPos="center"
+                h="200px"
+                w="200px"
+                _hover={{ opacity: 0.8 }}
+                fontSize="xl"
+                fontWeight="bold"
+                colorScheme="cyan"
+                textAlign="center"
+              >
+                Motherboards
+              </Button>
+            </Link>
+            <Link to="/components/3">
+              <Button
+                as="div"  // Ensure the button is a div so that bgImage can apply correctly
+                variant="solid"
+                color="white"
+                bgImage="url('https://miro.medium.com/v2/resize:fit:1061/0*6k9X6LPiM4XKyssm.jpg')"
+                bgSize="cover"
+                bgPos="center"
+                h="200px"
+                w="200px"
+                _hover={{ opacity: 0.8 }}
+                fontSize="xl"
+                fontWeight="bold"
+                colorScheme="cyan"
+                textAlign="center"
+              >
+                RAM
+              </Button>
+            </Link>
+
+            <Link to="/components/5">
+              <Button
+                as="div"  // Ensure the button is a div so that bgImage can apply correctly
+                variant="solid"
+                color="white"
+                bgImage="url('https://ithardware.pl/artykuly/max/29233_1.jpg')"
+                bgSize="cover"
+                bgPos="center"
+                h="200px"
+                w="200px"
+                _hover={{ opacity: 0.8 }}
+                fontSize="xl"
+                fontWeight="bold"
+                colorScheme="cyan"
+                textAlign="center"
+              >
+                Storage
+              </Button>
+            </Link>
+          </Stack>
+        </Stack>
+
+
+      </Box>
+
     </Stack>
   );
 }

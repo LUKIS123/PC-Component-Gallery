@@ -14,10 +14,11 @@ internal static class GetComponentsListEndpoint
             "/api/components",
             async (
                 [FromQuery] int pageIndex,
+                [FromQuery] int? typeId,
                 GetComponentsListHandler handler,
                 CancellationToken cancellationToken) =>
         {
-            var result = await handler.Handle(pageIndex, cancellationToken);
+            var result = await handler.Handle(pageIndex, typeId, cancellationToken);
             return Results.Ok(new GetComponentsListResponse(result));
         });
     }
