@@ -19,9 +19,10 @@ public class EntityFrameworkComponentRepository(GalleryMainDbContext dbContext) 
             : null;
     }
 
-    public async Task<List<ComputerComponent>> GetComponentsListAsync(int pageIndex, int pageSize, CancellationToken cancellationToken)
+    public async Task<List<ComputerComponent>> GetComponentsListAsync(int pageIndex, int? typeId, int pageSize, CancellationToken cancellationToken)
     {
         var result = await dbContext.Components
+            .Where(c => !typeId.HasValue || c.Type == typeId)
             .AsNoTracking()
             .Include(c => c.Specifications)
             .Skip(pageIndex * pageSize)
@@ -33,6 +34,38 @@ public class EntityFrameworkComponentRepository(GalleryMainDbContext dbContext) 
             .ToList();
     }
 
+    public async Task<ComponentTypeDetails?> GetComponentTypeDetailsByIdAsync(int typeId, CancellationToken cancellationToken)
+    {
+        var entity = await dbContext.ComponentTypes
+            .SingleOrDefaultAsync(ct => ct.ComponentTypeId == typeId, cancellationToken);
+
+        if (entity == null)
+            return null;
+
+        return MapToComponentTypeDetails(entity);
+
+    }
+
+    public async Task<List<ComponentTypeDetails>> GetComponentTypeDetailsAsync(CancellationToken cancellationToken)
+    {
+        var result = await dbContext.ComponentTypes
+            .ToListAsync();
+
+        return result
+            .Select(MapToComponentTypeDetails)
+            .ToList();
+
+    }
+
+
+    private static ComponentTypeDetails MapToComponentTypeDetails(ComponentTypeEntity componentType)
+    {
+        return new(
+            componentType.ComponentTypeId,
+            componentType.Name,
+            componentType.ImageUrl);
+    }
+
     private static ComputerComponent MapToComputerComponent(ComponentEntity component)
     {
         return new(
@@ -41,6 +74,7 @@ public class EntityFrameworkComponentRepository(GalleryMainDbContext dbContext) 
             component.Description,
             component.Type,
             component.Price,
+            component.ImageUrl,
             component.Specifications.ToDictionary(x => x.Key, x => x.Value));
     }
 }

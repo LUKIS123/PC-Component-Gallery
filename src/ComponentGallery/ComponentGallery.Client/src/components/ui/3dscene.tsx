@@ -46,11 +46,8 @@ function Scene() {
     }, []);
 
     return (
-        <div>
-            <div>Three.js App</div>
-            <div id="canvasDiv" style={{ height: '300px', width: '300px' }}>
-                <canvas id="myThreeJsCanvas"></canvas>
-            </div>
+        <div id="canvasDiv" style={{ height: '100%', width: '100%' }}>
+            <canvas id="myThreeJsCanvas"></canvas>
         </div>
     );
 }

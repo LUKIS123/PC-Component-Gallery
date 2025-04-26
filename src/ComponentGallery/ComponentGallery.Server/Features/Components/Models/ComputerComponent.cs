@@ -6,4 +6,5 @@ public record ComputerComponent(
     string Description,
     int Type,
     decimal Price,
+    string? ImageUrl,
     Dictionary<string, string> Specification);
