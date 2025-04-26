@@ -1,5 +1,5 @@
+import SceneInit from "@/lib/SceneInit";
 import { useEffect } from "react";
-import SceneInit from "../../lib/SceneInit.js";
 
 import * as THREE from "three";
 
@@ -8,7 +8,6 @@ import { EXRLoader, GLTFLoader } from "three/examples/jsm/Addons.js";
 function Scene() {
   useEffect(() => {
     const test = new SceneInit("myThreeJsCanvas");
-    test.initialize();
     test.animate();
 
     const exrLoader = new EXRLoader();
@@ -24,10 +23,8 @@ function Scene() {
     gltfLoader.load(
       "/api/assents/components/1/main", // struktura url: api/assets/components/{componentID}/{cokolwiek}, zwraca gltf z odniesieniem do tekstur
       (gltfScene) => {
-        console.log("Model loaded:", gltfScene);
         gltfScene.scene.traverse((node) => {
-          if (node.isMesh) {
-            console.log(node.material);
+          if (node instanceof THREE.Mesh) {
             node.material.transparent = true;
             node.material.alphaTest = 0.6;
             node.material.needsUpdate = true;

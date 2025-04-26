@@ -30,8 +30,6 @@ export function ComponentViewPage() {
     return <Box padding={8}>Component not found</Box>;
   }
 
-  console.log(component);
-
   return (
     <Box padding={8}>
       {/* Header Section */}
