@@ -1,12 +1,10 @@
-import Scene from "@/components/ui/3dscene";
-import { Box, Button, Grid, Heading, Stack, Text, Image } from "@chakra-ui/react";
+import { Box, Button, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import { Link } from "react-router";
-
 
 export function IndexPage() {
   return (
-    <Stack h="100vh" direction="column" >
-      <Box bg="black" color="white" >
+    <Stack h="100vh" direction="column">
+      <Box bg="black" color="white">
         {/* Hero Section */}
         <Box
           position="relative"
@@ -47,18 +45,19 @@ export function IndexPage() {
         </Box>
 
         {/* Introduction Section */}
-        <Stack gap={8} w={['100%', '75%']} mx="auto" p={4}>
+        <Stack gap={8} w={["100%", "75%"]} mx="auto" p={4}>
           <Heading as="h2" size="xl" color="white">
             What is the PC Component Gallery?
           </Heading>
           <Text fontSize="lg" color="gray.300">
-            Discover and compare the latest PC components for building your dream computer.
-            Whether you're a beginner or an expert, our gallery provides all the info you need to make informed decisions.
+            Discover and compare the latest PC components for building your
+            dream computer. Whether you're a beginner or an expert, our gallery
+            provides all the info you need to make informed decisions.
           </Text>
         </Stack>
 
         {/* Featured Categories Section */}
-        <Stack gap={8} w={['100%', '75%']} mx="auto" p={4}>
+        <Stack gap={8} w={["100%", "75%"]} mx="auto" p={4}>
           <Heading as="h2" size="lg" color="white" textAlign="center">
             Explore Categories
           </Heading>
@@ -66,7 +65,7 @@ export function IndexPage() {
             {/* Category Buttons with Background Images */}
             <Link to="/components/1">
               <Button
-                as="div"  // Ensure the button is a div so that bgImage can apply correctly
+                as="div" // Ensure the button is a div so that bgImage can apply correctly
                 variant="solid"
                 color="white"
                 bgImage="url('https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2505503-ryzen-7-7800x3d-og.jpg')"
@@ -85,7 +84,7 @@ export function IndexPage() {
             </Link>
             <Link to="/components/4">
               <Button
-                as="div"  // Ensure the button is a div so that bgImage can apply correctly
+                as="div" // Ensure the button is a div so that bgImage can apply correctly
                 variant="solid"
                 color="white"
                 bgImage="url('https://www.pcgamesn.com/wp-content/sites/pcgamesn/2021/09/geforce-rtx-3080-ti-product-gallery-full-screen-3840-3_7b0335b3-f6b3-45d5-89f2-206d2a4e190e-prv-550x309.jpg')"
@@ -104,7 +103,7 @@ export function IndexPage() {
             </Link>
             <Link to="/components/2">
               <Button
-                as="div"  // Ensure the button is a div so that bgImage can apply correctly
+                as="div" // Ensure the button is a div so that bgImage can apply correctly
                 variant="solid"
                 color="white"
                 bgImage="url('https://io.bikegremlin.com/wp-content/uploads/2024/07/modern-pc-computer-motherboard.jpg')"
@@ -123,7 +122,7 @@ export function IndexPage() {
             </Link>
             <Link to="/components/3">
               <Button
-                as="div"  // Ensure the button is a div so that bgImage can apply correctly
+                as="div" // Ensure the button is a div so that bgImage can apply correctly
                 variant="solid"
                 color="white"
                 bgImage="url('https://miro.medium.com/v2/resize:fit:1061/0*6k9X6LPiM4XKyssm.jpg')"
@@ -143,7 +142,7 @@ export function IndexPage() {
 
             <Link to="/components/5">
               <Button
-                as="div"  // Ensure the button is a div so that bgImage can apply correctly
+                as="div" // Ensure the button is a div so that bgImage can apply correctly
                 variant="solid"
                 color="white"
                 bgImage="url('https://ithardware.pl/artykuly/max/29233_1.jpg')"
@@ -162,10 +161,7 @@ export function IndexPage() {
             </Link>
           </Stack>
         </Stack>
-
-
       </Box>
-
     </Stack>
   );
 }
