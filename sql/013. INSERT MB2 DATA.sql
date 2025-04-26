@@ -2,7 +2,7 @@ INSERT INTO [Gallery].[Components] ([Name], [Description], [Type], [Price])
 VALUES (
     'ROG Zenith Extreme Alpha',
     'E-ATX Motherboard from Asus, TR4 socket.',
-    1,
+    2,
     2999.99
 );
 

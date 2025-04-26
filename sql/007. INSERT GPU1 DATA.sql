@@ -2,7 +2,7 @@ INSERT INTO [Gallery].[Components] ([Name], [Description], [Type], [Price])
 VALUES (
     'NVIDIA GeForce RTX 2080 Ti',
     'An 11GB GPU based on the TU102 graphics processor.',
-    1,
+    4,
     1999.99
 );
 

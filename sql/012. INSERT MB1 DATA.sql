@@ -2,7 +2,7 @@ INSERT INTO [Gallery].[Components] ([Name], [Description], [Type], [Price])
 VALUES (
     'ROG STRIX X470-I GAMING',
     'ITX Motherboard from Asus, AM4 socket.',
-    1,
+    2,
     899.99
 );
 

@@ -2,7 +2,7 @@ INSERT INTO [Gallery].[Components] ([Name], [Description], [Type], [Price])
 VALUES (
     'HyperX Fury DDR4',
     '16 GB stick of DDR4 memory from HyperX (Kingston).',
-    1,
+    3,
     599.99
 );
 

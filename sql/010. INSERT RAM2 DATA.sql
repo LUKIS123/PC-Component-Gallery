@@ -2,7 +2,7 @@ INSERT INTO [Gallery].[Components] ([Name], [Description], [Type], [Price])
 VALUES (
     'Corsair VENGEANCE RGB PRO',
     '8GB stick of DDR4 memory from Corsair.',
-    1,
+    3,
     299.99
 );
 

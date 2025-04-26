@@ -2,7 +2,7 @@ INSERT INTO [Gallery].[Components] ([Name], [Description], [Type], [Price])
 VALUES (
     'AMD Radeon RX 6900 XT',
     'A 16GB GPU based on the Navi 21 graphics processor.',
-    1,
+    4,
     2999.99
 );
 
