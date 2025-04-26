@@ -1,4 +1,4 @@
-﻿using ComponentGallery.Server.Features.Components.GetComponentAssets;
+﻿using ComponentGallery.Server.Features.Common.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComponentGallery.Server.Features.Components.UploadComponentAssets;
@@ -11,28 +11,28 @@ public static class UploadComponentAssetEndpoint
             "/api/assents/components/{componentId}",
             async (
                 [FromRoute] int componentId,
-                [FromForm] IFormFile file,
-                [FromServices] GetComponentAssetHandler handler,
+                [FromForm] UploadFileRequest request,
+                [FromServices] UploadComponentAssetHandler handler,
                 CancellationToken cancellationToken) =>
             {
-                if (file.Length == 0)
+                if (request.File.Length == 0)
                 {
                     return Results.BadRequest("File is empty.");
                 }
 
                 using var memoryStream = new MemoryStream();
-                await file.CopyToAsync(memoryStream, cancellationToken);
+                await request.File.CopyToAsync(memoryStream, cancellationToken);
 
-                // var request = new SaveConversationImageRequest
-                // {
-                //     ConversationId = chatId,
-                //     Image = memoryStream.ToArray(),
-                //     FileExtension = Path.GetExtension(file.FileName)
-                // };
-                //
-                // await conversationImageService.SaveConversationImage(request);
-                return Results.Ok();
+                await handler.Handle(
+                    componentId,
+                    memoryStream.ToArray(),
+                    Path.GetFileNameWithoutExtension(request.File.FileName),
+                    Path.GetExtension(request.File.FileName),
+                    cancellationToken);
+
+                return Results.Created();
             })
+            .Accepts<IFormFile>("multipart/form-data")
             .DisableAntiforgery();
     }
 }

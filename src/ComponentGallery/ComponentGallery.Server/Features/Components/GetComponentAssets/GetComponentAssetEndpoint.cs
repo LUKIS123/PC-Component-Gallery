@@ -15,7 +15,7 @@ internal static class GetComponentAssetEndpoint
                 CancellationToken cancellationToken) =>
             {
                 var result = await handler.Handle(componentId, file, cancellationToken);
-                return Results.File(result.Image, result.ContentType, result.FileName);
+                return Results.File(result.FileBytes, result.ContentType, result.FileName);
             });
     }
 }

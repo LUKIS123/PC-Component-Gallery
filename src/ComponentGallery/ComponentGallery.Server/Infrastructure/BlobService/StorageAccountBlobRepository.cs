@@ -1,5 +1,6 @@
 ﻿using Azure.Storage.Blobs;
-using ComponentGallery.Server.Features.Components.Repositories;
+using Azure.Storage.Blobs.Models;
+using ComponentGallery.Server.Features.Common.Repositories;
 using ComponentGallery.Server.Infrastructure.BlobService.Exceptions;
 using ComponentGallery.Server.Infrastructure.BlobService.Models;
 using ComponentGallery.Server.Infrastructure.BlobService.Utility;
@@ -14,30 +15,57 @@ public class StorageAccountBlobRepository(
 {
     private readonly BlobServiceOptions _blobServiceOptions = options.Value;
 
-    public Task UploadImageAsync(byte[] requestImage, string baseFilePath, string fileExtension)
+    public async Task UploadAssetAsync(SaveResourceDto saveResource)
     {
-        throw new NotImplementedException();
+        var containerClient = GetBlobContainerClient(saveResource.ResourceType);
+
+        var blobClient = containerClient.GetBlobClient(saveResource.ResourcePath);
+        await blobClient.UploadAsync(
+            content: BinaryData.FromBytes(saveResource.FileBytes),
+            options: new BlobUploadOptions
+            {
+                HttpHeaders = new BlobHttpHeaders
+                {
+                    ContentType = fileContentTypeResolver.ResolveContentType(saveResource.FileExtension)
+                },
+                Conditions = null // Overwrite if exists
+            },
+            cancellationToken: saveResource.CancellationToken);
     }
 
-    public async Task<DownloadedResourceDto> DownloadMainComponentAsset(string baseUri, ISet<string> mainFileExtensionSet, CancellationToken cancellationToken)
+    public async Task<DownloadedResourceDto> DownloadMainComponentAsset(
+        string baseUri,
+        ISet<string> mainFileExtensionSet,
+        CancellationToken cancellationToken)
     {
-        var blobClient = await GetBlobClientForExtensionAsync(baseUri, mainFileExtensionSet, BlobClientType.Component, cancellationToken);
+        var blobClient = await GetBlobClientForExtensionAsync(
+            baseUri,
+            mainFileExtensionSet,
+            ResourceType.Component,
+            cancellationToken);
         return await DownloadBlobContentAsync(blobClient, cancellationToken);
     }
 
-    public async Task<DownloadedResourceDto> DownloadAdditionalComponentAsset(string uri, CancellationToken cancellationToken)
+    public async Task<DownloadedResourceDto> DownloadAdditionalComponentAsset(
+        string uri,
+        CancellationToken cancellationToken)
     {
-        var blobClient = await GetBlobClient(uri, BlobClientType.Component, cancellationToken);
+        var blobClient = await GetBlobClient(uri, ResourceType.Component, cancellationToken);
         return await DownloadBlobContentAsync(blobClient, cancellationToken);
     }
 
-    public async Task<DownloadedResourceDto> DownloadBackgroundAsset(string uri, CancellationToken cancellationToken)
+    public async Task<DownloadedResourceDto> DownloadBackgroundAsset(
+        string uri,
+        CancellationToken cancellationToken)
     {
-        var blobClient = await GetBlobClient(uri, BlobClientType.Background, cancellationToken);
+        var blobClient = await GetBlobClient(uri, ResourceType.Background, cancellationToken);
         return await DownloadBlobContentAsync(blobClient, cancellationToken);
     }
 
-    private async Task<BlobClient> GetBlobClient(string uri, BlobClientType type, CancellationToken cancellationToken)
+    private async Task<BlobClient> GetBlobClient(
+        string uri,
+        ResourceType type,
+        CancellationToken cancellationToken)
     {
         var blobContainerClient = GetBlobContainerClient(type);
 
@@ -49,7 +77,11 @@ public class StorageAccountBlobRepository(
         throw new ContentNotFoundException($"Resource:{uri} does not exist");
     }
 
-    private async Task<BlobClient> GetBlobClientForExtensionAsync(string baseUri, ISet<string> mainFileExtensionSet, BlobClientType type, CancellationToken cancellationToken)
+    private async Task<BlobClient> GetBlobClientForExtensionAsync(
+        string baseUri,
+        ISet<string> mainFileExtensionSet,
+        ResourceType type,
+        CancellationToken cancellationToken)
     {
         var blobContainerClient = GetBlobContainerClient(type);
 
@@ -65,9 +97,9 @@ public class StorageAccountBlobRepository(
         throw new ContentNotFoundException($"Resource:{baseUri} does not exist");
     }
 
-    private BlobContainerClient GetBlobContainerClient(BlobClientType type)
+    private BlobContainerClient GetBlobContainerClient(ResourceType type)
     {
-        return type == BlobClientType.Component
+        return type == ResourceType.Component
             ? blobServiceClient.GetBlobContainerClient(_blobServiceOptions.ComponentContainerName)
             : blobServiceClient.GetBlobContainerClient(_blobServiceOptions.BackgroundContainerName);
     }
@@ -86,24 +118,3 @@ public class StorageAccountBlobRepository(
             content.Value.Details.ContentType);
     }
 }
-
-
-// blob/
-// └── components/
-//     └── {componentId}/
-//         ├── model.gltf
-//         ├── model.bin          ← opcjonalny binarny bufor
-//         ├── texture1.jpg       ← tekstury
-//         ├── texture2.png
-//         └── other-resources/   ← opcjonalny folder na dodatkowe rzeczy
-
-// Łatwe do odczytu: wystarczy pobrać cały folder components/{componentId}/{componentName.gltf}
-// albo components/componentId/costam.glft -> przeiteruje po elementach i zwroci glft
-// potem reszta components/componentId/nazwaWlasciwa.jpg
-// UWAGA: jeszcze moze byc .glb plik
-
-
-// uiri: /costam/id/model.gltf lub /costam/id/model.glb --- jesli rozpozna koncowke gltf lub glb to zwraca niezaleznie od nazwy pliku, szuka 1 apotkane
-// pozostale rozszerzenia musza byc nazwa densitive.!!!!1
-// 
-// backgroundy to osobna sciezka. /costam/backrounds/id/siema.exr

@@ -1,5 +1,5 @@
-﻿using ComponentGallery.Server.Features.Components.Models;
-using ComponentGallery.Server.Features.Components.Repositories;
+﻿using ComponentGallery.Server.Features.Common.Models;
+using ComponentGallery.Server.Features.Common.Repositories;
 
 namespace ComponentGallery.Server.Features.Components.GetComponentAssets;
 

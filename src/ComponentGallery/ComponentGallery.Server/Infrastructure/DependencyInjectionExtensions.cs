@@ -1,4 +1,5 @@
-﻿using ComponentGallery.Server.Features.Components.Repositories;
+﻿using ComponentGallery.Server.Features.Common.Repositories;
+using ComponentGallery.Server.Features.Components.Repositories;
 using ComponentGallery.Server.Infrastructure.BlobService;
 using ComponentGallery.Server.Infrastructure.BlobService.Middleware;
 using ComponentGallery.Server.Infrastructure.BlobService.Utility;
