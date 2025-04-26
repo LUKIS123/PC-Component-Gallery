@@ -10,6 +10,8 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
+app.UseInfrastructure();
+
 app.UseDefaultFiles();
 app.MapStaticAssets();
 
