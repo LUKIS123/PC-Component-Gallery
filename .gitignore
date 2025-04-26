@@ -403,3 +403,4 @@ terraform/.terraform.lock.hcl
 terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
 src/ComponentGallery/ComponentGallery.Server/Properties/ServiceDependencies/pc-component-gallery - Zip Deploy/profile.arm.json
+src/ComponentGallery/ComponentGallery.Server/wwwroot
