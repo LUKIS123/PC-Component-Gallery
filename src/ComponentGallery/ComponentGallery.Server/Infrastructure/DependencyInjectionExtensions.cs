@@ -19,7 +19,7 @@ public static class DependencyInjectionExtensions
 
         services.AddDbContext<GalleryMainDbContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("SQL-Main"));
+            options.UseSqlServer(configuration.GetConnectionString("SQLMain"));
         });
 
         // Azure Blob Service

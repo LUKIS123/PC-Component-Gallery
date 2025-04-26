@@ -1,9 +1,19 @@
+import {
+  Box,
+  Button,
+  Heading,
+  Image,
+  Input,
+  SimpleGrid,
+  Stack,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { useComponentsDataService } from "./services/components-data-service";
 import { useState } from "react";
-import { Box, Button, CardBody, Heading, Input, Select, SimpleGrid, VStack, Image, Stack, Text, Badge, LocaleProvider, FormatNumber } from "@chakra-ui/react";
 import { Link, useParams } from "react-router";
 import { useComponentTypeDataService } from "./services/component-type-data-service";
+import { useComponentsDataService } from "./services/components-data-service";
 
 export function ComponentsListPage() {
   const dataService = useComponentsDataService();
@@ -12,16 +22,19 @@ export function ComponentsListPage() {
   const { typeId } = useParams();
   const { data: components, isLoading: isComponentsLoading } = useQuery({
     queryKey: ["components", page],
-    queryFn: () => dataService.getComponents(page, typeId ? parseInt(typeId, 10) : 0),
+    queryFn: () =>
+      dataService.getComponents(page, typeId ? parseInt(typeId, 10) : 0),
   });
 
   const { data: componentType, isLoading: isComponentTypeLoading } = useQuery({
     queryKey: ["componentType"],
-    queryFn: () => componentTypesDataService.getComponentTypeById(typeId ? parseInt(typeId, 10) : 0),
+    queryFn: () =>
+      componentTypesDataService.getComponentTypeById(
+        typeId ? parseInt(typeId, 10) : 0
+      ),
   });
 
-
-  if (isComponentsLoading) {
+  if (isComponentsLoading || isComponentTypeLoading) {
     return <VStack>Loading...</VStack>;
   }
 
@@ -66,7 +79,12 @@ export function ComponentsListPage() {
       </Box>
 
       {/* Search and Filter Section */}
-      <Box marginTop={4} display="flex" justifyContent="space-between" alignItems="center">
+      <Box
+        marginTop={4}
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+      >
         <Input
           placeholder="Search components"
           // value={searchQuery}
@@ -92,7 +110,13 @@ export function ComponentsListPage() {
           // .filter((component) => component.name.toLowerCase().includes(searchQuery.toLowerCase()))
           // .filter((component) => (selectedType ? component.type.toString() === selectedType : true))
           .map((component) => (
-            <Box key={component.id} borderRadius="md" boxShadow="lg" bg="gray.700" padding={4}>
+            <Box
+              key={component.id}
+              borderRadius="md"
+              boxShadow="lg"
+              bg="gray.700"
+              padding={4}
+            >
               <Box>
                 <Image
                   src={component.imageUrl}
@@ -105,7 +129,10 @@ export function ComponentsListPage() {
                   <Heading size="md">{component.name}</Heading>
                   <Text>{component.description}</Text>
                   <Text fontWeight="bold" color="teal.600">
-                    {new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(component.price)}
+                    {new Intl.NumberFormat("pl-PL", {
+                      style: "currency",
+                      currency: "PLN",
+                    }).format(component.price)}
                   </Text>
                   {/* Specifications (optional) */}
                   {/* <Text>
@@ -118,7 +145,7 @@ export function ComponentsListPage() {
                     <strong>Threads:</strong> {component.specification.Threads}
                   </Text> */}
                   <Link
-                    to={`/components/3d/${component.id}`}  // Navigate to the 3D view page
+                    to={`/components/3d/${component.id}`} // Navigate to the 3D view page
                   >
                     <Button
                       colorScheme="teal" // Base color for the button
