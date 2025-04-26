@@ -32,7 +32,7 @@ public static class UploadComponentAssetEndpoint
 
                 return Results.Created();
             })
-            .Accepts<IFormFile>("multipart/form-data")
+            .Accepts<UploadFileRequest>("multipart/form-data")
             .DisableAntiforgery();
     }
 }
