@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import * as THREE from 'three';
 
-import SceneInit from '../../lib/SceneInit';
+import SceneInit from '../../lib/SceneInit.js';
 import { EXRLoader, GLTFLoader } from 'three/examples/jsm/Addons.js';
 
 
@@ -14,8 +14,8 @@ function Scene() {
         test.animate();
 
         const exrLoader = new EXRLoader();
-
-        exrLoader.load('/assets/photo_studio_01_4k.exr', (texture) => {
+        // struktura url: api/assets/backgrounds/{backgroundID}, narazie mamy tylko 1 i bez tabelki w bazie
+        exrLoader.load('/api/assents/backgrounds/1', (texture) => {
             texture.mapping = THREE.EquirectangularReflectionMapping;
             test.scene.environment = texture;
             // test.scene.background = texture;
@@ -24,7 +24,7 @@ function Scene() {
         const gltfLoader = new GLTFLoader();
 
         gltfLoader.load(
-            '/assets/am4cpu/am4cpu.gltf',
+            '/api/assents/components/1/main',   // struktura url: api/assets/components/{componentID}/{cokolwiek}, zwraca gltf z odniesieniem do tekstur
             (gltfScene) => {
                 console.log('Model loaded:', gltfScene);
                 gltfScene.scene.traverse(node => {
