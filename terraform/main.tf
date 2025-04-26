@@ -91,3 +91,9 @@ resource "azurerm_storage_container" "pc_component_gallery_container" {
   storage_account_name  = azurerm_storage_account.pc_component_gallery_storage.name
   container_access_type = "private"
 }
+
+resource "azurerm_storage_container" "component_gallery_backgrounds_container" {
+  name                  = "backgrounds"
+  storage_account_name  = azurerm_storage_account.pc_component_gallery_storage.name
+  container_access_type = "private"
+}
