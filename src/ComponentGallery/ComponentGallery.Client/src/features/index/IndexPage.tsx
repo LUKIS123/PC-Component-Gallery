@@ -14,7 +14,7 @@ export function IndexPage() {
           overflow="hidden"
         >
           <Image
-            src="https://media.istockphoto.com/id/483147081/photo/futuristic-circuit-board-blue-with-electrons.jpg?s=612x612&w=0&k=20&c=cOlFe3m-qcm4zTmCKxVmX4huAlW9mpwaR2oPZhZjqK0=" // Use a high-quality image of a PC setup here
+            src="https://getwallpapers.com/wallpaper/full/8/d/c/38236.jpg" // Use a high-quality image of a PC setup here
             alt="PC Setup"
             width="100%"
             height="300px"
