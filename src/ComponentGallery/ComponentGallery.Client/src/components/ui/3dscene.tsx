@@ -25,17 +25,43 @@ function Scene() {
 
     gltfLoader.load(
       `/api/assents/components/${componentId}/main`, // struktura url: api/assets/components/{componentID}/{cokolwiek}, zwraca gltf z odniesieniem do tekstur
-      (gltfScene) => {
-        gltfScene.scene.traverse((node) => {
+      (gltf) => {
+        gltf.scene.traverse((node) => {
           if (node instanceof THREE.Mesh) {
-            node.material.transparent = true;
-            node.material.alphaTest = 0.6;
             node.material.needsUpdate = true;
           }
+          if (node instanceof THREE.Object3D && !node.parent) {
+            gltf.scene.add(node);
+          }
         });
-        test.scene.add(gltfScene.scene);
+
+        // Compute the bounding box of the loaded model
+        const box = new THREE.Box3().setFromObject(gltf.scene);
+
+        // Get the center and size of the bounding box
+        const center = new THREE.Vector3();
+        const size = new THREE.Vector3();
+        box.getCenter(center);
+        box.getSize(size);
+
+        // Adjust the camera position based on the model's size
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const fov = test.camera.fov * (Math.PI / 180); // Convert FOV to radians
+        const cameraDistance = maxDim / (2 * Math.tan(fov / 2)); // Distance to fit the model
+        test.camera.position.set(center.x, center.y + maxDim, center.z + cameraDistance);
+
+        // Ensure the camera looks at the center of the model
+        test.camera.lookAt(center);
+        test.camera.updateProjectionMatrix();
+
+        test.scene.add(gltf.scene);
       },
-      undefined,
+      // onProgress callback
+      (xhr) => {
+        console.log(
+          (xhr.loaded / xhr.total) * 100 + "% loaded gltf model"
+        );
+      },
       (error) => {
         console.error("An error happened while loading the GLTF model:", error);
       }
