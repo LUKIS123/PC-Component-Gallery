@@ -1,18 +1,21 @@
 import SceneInit from "@/lib/SceneInit";
 import { useEffect } from "react";
+import { useParams } from "react-router";
 
 import * as THREE from "three";
 
 import { EXRLoader, GLTFLoader } from "three/examples/jsm/Addons.js";
 
 function Scene() {
+  const { componentId } = useParams();
+
   useEffect(() => {
     const test = new SceneInit("myThreeJsCanvas");
     test.animate();
 
     const exrLoader = new EXRLoader();
     // struktura url: api/assets/backgrounds/{backgroundID}, narazie mamy tylko 1 i bez tabelki w bazie
-    exrLoader.load("/api/assents/backgrounds/1", (texture) => {
+    exrLoader.load(`/api/assents/backgrounds/${componentId}`, (texture) => {
       texture.mapping = THREE.EquirectangularReflectionMapping;
       test.scene.environment = texture;
       // test.scene.background = texture;
@@ -21,7 +24,7 @@ function Scene() {
     const gltfLoader = new GLTFLoader();
 
     gltfLoader.load(
-      "/api/assents/components/1/main", // struktura url: api/assets/components/{componentID}/{cokolwiek}, zwraca gltf z odniesieniem do tekstur
+      `/api/assents/components/${componentId}/main`, // struktura url: api/assets/components/{componentID}/{cokolwiek}, zwraca gltf z odniesieniem do tekstur
       (gltfScene) => {
         gltfScene.scene.traverse((node) => {
           if (node instanceof THREE.Mesh) {
