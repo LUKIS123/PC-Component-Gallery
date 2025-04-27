@@ -15,7 +15,7 @@ function Scene() {
 
     const exrLoader = new EXRLoader();
     // struktura url: api/assets/backgrounds/{backgroundID}, narazie mamy tylko 1 i bez tabelki w bazie
-    exrLoader.load(`/api/assents/backgrounds/${componentId}`, (texture) => {
+    exrLoader.load(`/api/assents/backgrounds/1`, (texture) => {
       texture.mapping = THREE.EquirectangularReflectionMapping;
       test.scene.environment = texture;
       // test.scene.background = texture;
