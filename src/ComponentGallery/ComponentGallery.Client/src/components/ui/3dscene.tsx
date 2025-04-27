@@ -23,8 +23,6 @@ function Scene() {
 
     const gltfLoader = new GLTFLoader();
 
-    console.log("componentId", componentId);
-
     gltfLoader.load(
       `/api/assents/components/${componentId}/main`, // struktura url: api/assets/components/{componentID}/{cokolwiek}, zwraca gltf z odniesieniem do tekstur
       (gltfScene) => {
