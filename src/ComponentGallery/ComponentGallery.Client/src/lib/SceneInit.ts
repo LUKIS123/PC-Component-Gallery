@@ -4,12 +4,13 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 export default class SceneInit {
   public readonly scene: THREE.Scene;
 
-  private readonly camera: THREE.PerspectiveCamera;
+  public readonly camera: THREE.PerspectiveCamera;
   private readonly renderer: THREE.WebGLRenderer;
   private readonly controls: OrbitControls;
   private readonly ambientLight: THREE.AmbientLight;
   private readonly directionalLight: THREE.DirectionalLight;
   private readonly directionalLight2: THREE.DirectionalLight;
+  private readonly hemisphereLight: THREE.HemisphereLight;
 
   constructor(private canvasId: string) {
     const fov = 45;
@@ -17,6 +18,7 @@ export default class SceneInit {
     const farPlane = 200;
 
     this.scene = new THREE.Scene();
+
     this.camera = new THREE.PerspectiveCamera(
       fov,
       window.innerWidth / window.innerHeight,
@@ -45,20 +47,26 @@ export default class SceneInit {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
     // Increase the intensity of the ambient light
-    this.ambientLight = new THREE.AmbientLight(0xffffff, 2); // Increased intensity
+    this.ambientLight = new THREE.AmbientLight(0xffffff); // Increased intensity
     this.ambientLight.castShadow = true;
     this.scene.add(this.ambientLight);
 
+    this.hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x000000, 1); // Increased intensity
+    this.hemisphereLight.position.set(0, 0, 0);
+    this.hemisphereLight.castShadow = true;
+    this.scene.add(this.hemisphereLight);
+
     // Increase the intensity of the directional light
-    this.directionalLight = new THREE.DirectionalLight(0xffffff, 2); // Increased intensity
+    this.directionalLight = new THREE.DirectionalLight(0xffffff); // Increased intensity
     this.directionalLight.position.set(50, 32, 64);
     this.directionalLight.castShadow = true;
     this.scene.add(this.directionalLight);
 
-    this.directionalLight2 = new THREE.DirectionalLight(0xffffff, 2); // Increased intensity
-    this.directionalLight2.position.set(-50, 32, 64);
+    this.directionalLight2 = new THREE.DirectionalLight(0xffffff); // Increased intensity
+    this.directionalLight2.position.set(-50, 32, -64);
     this.directionalLight2.castShadow = true;
     this.scene.add(this.directionalLight2);
+
 
     // if window resizes
     window.addEventListener("resize", () => this.onWindowResize(), false);
@@ -67,10 +75,12 @@ export default class SceneInit {
   setSize() {
     const canvas = document.getElementById(this.canvasId);
     const parent = canvas?.parentElement;
+
     if (!parent) return;
 
     this.renderer.setSize(parent.clientWidth, parent.clientHeight);
     this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.updateProjectionMatrix();
   }
 
   animate() {
@@ -85,17 +95,20 @@ export default class SceneInit {
     // NOTE: Update uniform data on each render.
     // this.uniforms.u_time.value += this.clock.getDelta();
     this.setSize();
+    
     // this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.renderer.render(this.scene, this.camera);
   }
 
-  onWindowResize() {
+  updateProjectionMatrix() {
     const canvas = document.getElementById(this.canvasId);
     const parent = canvas?.parentElement;
     if (!parent) return;
-
     this.camera.aspect = parent.clientWidth / parent.clientHeight;
     this.camera.updateProjectionMatrix();
+  }
+
+  onWindowResize() {
     this.setSize();
   }
 }

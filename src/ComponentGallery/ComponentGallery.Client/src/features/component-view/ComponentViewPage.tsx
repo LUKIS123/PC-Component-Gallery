@@ -53,7 +53,7 @@ export function ComponentViewPage() {
         marginBottom={6}
       >
         {/* <Text fontSize="2xl" color="gray.500"> */}
-        <Box w="500px" h="100%">
+        <Box w="100%" h="100%">
           <Scene />
         </Box>
         {/* </Text> */}
