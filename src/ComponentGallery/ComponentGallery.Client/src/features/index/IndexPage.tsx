@@ -161,6 +161,60 @@ export function IndexPage() {
             </Link>
           </Stack>
         </Stack>
+
+        {/* PC Assembly Section - Visually separated */}
+        <Stack w={["100%", "75%"]} mx="auto" p={6} mt={12}>
+          <Heading as="h2" size="lg" color="white" textAlign="center">
+            Build Your Dream PC
+          </Heading>
+          <Box
+            border="2px dashed"
+            borderColor="cyan.400"
+            borderRadius="md"
+            p={6}
+            mx="auto"
+            mt={4}
+            bg="rgba(0, 0, 0, 0.7)"
+          >
+            <Link to="/pcBuilds">
+              <Button
+                as="div"
+                variant="solid"
+                color="white"
+                bgImage="url('https://airtasker-seo-assets-prod.s3.amazonaws.com/en_AU/1626840661916_pc-assembly-hero.jpg')"
+                bgSize="cover"
+                bgPos="center"
+                h="250px"
+                w={["100%", "400px"]}
+                _hover={{
+                  transform: "scale(1.02)",
+                  boxShadow: "0 0 15px cyan",
+                }}
+                transition="all 0.3s"
+                fontSize="2xl"
+                fontWeight="bold"
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                position="relative"
+                overflow="hidden"
+              >
+                <Box
+                  position="absolute"
+                  textAlign={"center"}
+                  bg="rgba(0, 0, 0, 0.8)"
+                  w="100%"
+                  p={3}
+                >
+                  3D PC Assembly
+                </Box>
+                <Text mt="auto" fontSize="md" p={2} bg="rgba(0, 0, 0, 0.8)">
+                  Create your perfect build
+                </Text>
+              </Button>
+            </Link>
+          </Box>
+        </Stack>
       </Box>
     </Stack>
   );
