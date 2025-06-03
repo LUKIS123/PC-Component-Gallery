@@ -18,4 +18,13 @@ public interface IComponentAssetRepository
     Task<DownloadedResourceDto> DownloadBackgroundAsset(
         string uri,
         CancellationToken cancellationToken);
+
+    Task<DownloadedResourceDto> DownloadMainPcBuildAsset(
+       string baseUri,
+       ISet<string> mainFileExtensionSet,
+       CancellationToken cancellationToken);
+
+    Task<DownloadedResourceDto> DownloadAdditionalPcBuildAsset(
+        string uri,
+        CancellationToken cancellationToken);
 }

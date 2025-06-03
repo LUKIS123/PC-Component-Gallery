@@ -33,6 +33,7 @@ public static class DependencyInjectionExtensions
         services.AddTransient<BlobServiceExceptionHandlingMiddleware>();
         services.AddTransient<IComponentAssetRepository, StorageAccountBlobRepository>();
         services.AddTransient<IFileContentTypeResolver, FileContentTypeResolver>();
+        services.AddTransient<IPcBuildsRepository, EntityFrameworkPcBuildRepository>();
     }
 
     public static void UseInfrastructure(this IApplicationBuilder app)
