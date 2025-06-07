@@ -3,6 +3,8 @@ import { IndexPage } from "./features/index/IndexPage";
 import { Layout } from "./features/layout/Layout";
 import { ComponentsListPage } from "./features/components-list/ComponentsListPage";
 import { ComponentViewPage } from "./features/component-view/ComponentViewPage";
+import { PcAssemblyPage } from "./features/assembly-view/PcAssemblyPage";
+import { PcBuildsListPage } from "./features/assembly-builds-list/PcBuildsPage";
 
 export function App() {
   return (
@@ -11,7 +13,12 @@ export function App() {
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<IndexPage />} />
           <Route path="/components/:typeId" element={<ComponentsListPage />} />
-          <Route path="/components/3d/:componentId" element={<ComponentViewPage />} />
+          <Route
+            path="/components/3d/:componentId"
+            element={<ComponentViewPage />}
+          />
+          <Route path="/pcBuilds" element={<PcBuildsListPage />} />
+          <Route path="/pcAssembly/:pcBuildId" element={<PcAssemblyPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

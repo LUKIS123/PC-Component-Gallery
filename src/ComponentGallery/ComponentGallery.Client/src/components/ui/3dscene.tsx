@@ -48,7 +48,11 @@ function Scene() {
         const maxDim = Math.max(size.x, size.y, size.z);
         const fov = test.camera.fov * (Math.PI / 180); // Convert FOV to radians
         const cameraDistance = maxDim / (2 * Math.tan(fov / 2)); // Distance to fit the model
-        test.camera.position.set(center.x, center.y + maxDim, center.z + cameraDistance);
+        test.camera.position.set(
+          center.x,
+          center.y + maxDim,
+          center.z + cameraDistance
+        );
 
         // Ensure the camera looks at the center of the model
         test.camera.lookAt(center);
@@ -58,9 +62,7 @@ function Scene() {
       },
       // onProgress callback
       (xhr) => {
-        console.log(
-          (xhr.loaded / xhr.total) * 100 + "% loaded gltf model"
-        );
+        console.log((xhr.loaded / xhr.total) * 100 + "% loaded gltf model");
       },
       (error) => {
         console.error("An error happened while loading the GLTF model:", error);

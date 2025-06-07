@@ -1,5 +1,4 @@
-﻿using ComponentGallery.Server.Features.Components.GetComponentsList;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace ComponentGallery.Server.Features.Components.GetComponentTypeDetails
 {
@@ -18,7 +17,5 @@ namespace ComponentGallery.Server.Features.Components.GetComponentTypeDetails
                     return Results.Ok(result);
                 });
         }
-
-
     }
 }

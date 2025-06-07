@@ -33,32 +33,60 @@ public class StorageAccountBlobRepository(
             cancellationToken: saveResource.CancellationToken);
     }
 
-    public async Task<DownloadedResourceDto> DownloadMainComponentAsset(
+    public Task<DownloadedResourceDto> DownloadMainComponentAsset(
         string baseUri,
         ISet<string> mainFileExtensionSet,
         CancellationToken cancellationToken)
     {
-        var blobClient = await GetBlobClientForExtensionAsync(
-            baseUri,
-            mainFileExtensionSet,
-            ResourceType.Component,
+        return DownloadAssetAsync(
+            () => GetBlobClientForExtensionAsync(baseUri, mainFileExtensionSet, ResourceType.Component,
+                cancellationToken),
             cancellationToken);
-        return await DownloadBlobContentAsync(blobClient, cancellationToken);
     }
 
-    public async Task<DownloadedResourceDto> DownloadAdditionalComponentAsset(
+    public Task<DownloadedResourceDto> DownloadAdditionalComponentAsset(
         string uri,
         CancellationToken cancellationToken)
     {
-        var blobClient = await GetBlobClient(uri, ResourceType.Component, cancellationToken);
-        return await DownloadBlobContentAsync(blobClient, cancellationToken);
+        return DownloadAssetAsync(
+            () => GetBlobClient(uri, ResourceType.Component, cancellationToken),
+            cancellationToken);
     }
 
-    public async Task<DownloadedResourceDto> DownloadBackgroundAsset(
+    public Task<DownloadedResourceDto> DownloadBackgroundAsset(
         string uri,
         CancellationToken cancellationToken)
     {
-        var blobClient = await GetBlobClient(uri, ResourceType.Background, cancellationToken);
+        return DownloadAssetAsync(
+            () => GetBlobClient(uri, ResourceType.Background, cancellationToken),
+            cancellationToken);
+    }
+
+    public Task<DownloadedResourceDto> DownloadMainPcBuildAsset(
+        string baseUri,
+        ISet<string> mainFileExtensionSet,
+        CancellationToken cancellationToken)
+    {
+        return DownloadAssetAsync(
+            () => GetBlobClientForExtensionAsync(baseUri, mainFileExtensionSet, ResourceType.PcBuild,
+                cancellationToken),
+            cancellationToken);
+    }
+
+    public Task<DownloadedResourceDto> DownloadAdditionalPcBuildAsset(
+        string uri,
+        CancellationToken cancellationToken)
+    {
+        return DownloadAssetAsync(
+            () => GetBlobClient(uri, ResourceType.PcBuild, cancellationToken),
+            cancellationToken);
+    }
+
+    private static async Task<DownloadedResourceDto> DownloadAssetAsync(
+        Func<Task<BlobClient>> getBlobClientFunc,
+        CancellationToken cancellationToken)
+    {
+        var blobClient = await getBlobClientFunc();
         return await DownloadBlobContentAsync(blobClient, cancellationToken);
     }
 
@@ -69,7 +97,8 @@ public class StorageAccountBlobRepository(
     {
         var blobContainerClient = GetBlobContainerClient(type);
 
-        await foreach (var blobItem in blobContainerClient.GetBlobsAsync(prefix: uri, cancellationToken: cancellationToken))
+        await foreach (var blobItem in blobContainerClient.GetBlobsAsync(prefix: uri,
+                           cancellationToken: cancellationToken))
         {
             return blobContainerClient.GetBlobClient(blobItem.Name);
         }
@@ -77,15 +106,17 @@ public class StorageAccountBlobRepository(
         throw new ContentNotFoundException($"Resource:{uri} does not exist");
     }
 
-    private async Task<BlobClient> GetBlobClientForExtensionAsync(
-        string baseUri,
-        ISet<string> mainFileExtensionSet,
-        ResourceType type,
-        CancellationToken cancellationToken)
+    private async Task<BlobClient>
+        GetBlobClientForExtensionAsync(
+            string baseUri,
+            ISet<string> mainFileExtensionSet,
+            ResourceType type,
+            CancellationToken cancellationToken)
     {
         var blobContainerClient = GetBlobContainerClient(type);
 
-        await foreach (var blobItem in blobContainerClient.GetBlobsAsync(prefix: baseUri, cancellationToken: cancellationToken))
+        await foreach (var blobItem in blobContainerClient.GetBlobsAsync(prefix: baseUri,
+                           cancellationToken: cancellationToken))
         {
             var extension = Path.GetExtension(blobItem.Name);
             if (mainFileExtensionSet.Contains(extension.ToLowerInvariant()))
@@ -99,12 +130,19 @@ public class StorageAccountBlobRepository(
 
     private BlobContainerClient GetBlobContainerClient(ResourceType type)
     {
-        return type == ResourceType.Component
-            ? blobServiceClient.GetBlobContainerClient(_blobServiceOptions.ComponentContainerName)
-            : blobServiceClient.GetBlobContainerClient(_blobServiceOptions.BackgroundContainerName);
+        return type switch
+        {
+            ResourceType.PcBuild => blobServiceClient.GetBlobContainerClient(_blobServiceOptions.PcBuildContainerName),
+            ResourceType.Component => blobServiceClient.GetBlobContainerClient(_blobServiceOptions
+                .ComponentContainerName),
+            ResourceType.Background => blobServiceClient.GetBlobContainerClient(_blobServiceOptions
+                .BackgroundContainerName),
+            _ => throw new ArgumentException("Resource type must be specified", nameof(type))
+        };
     }
 
-    private static async Task<DownloadedResourceDto> DownloadBlobContentAsync(BlobClient blobClient, CancellationToken cancellationToken)
+    private static async Task<DownloadedResourceDto> DownloadBlobContentAsync(BlobClient blobClient,
+        CancellationToken cancellationToken)
     {
         var content = await blobClient.DownloadContentAsync(cancellationToken);
         if (!content.HasValue)

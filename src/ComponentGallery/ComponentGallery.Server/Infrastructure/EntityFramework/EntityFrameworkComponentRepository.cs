@@ -23,6 +23,7 @@ public class EntityFrameworkComponentRepository(GalleryMainDbContext dbContext) 
     {
         var result = await dbContext.Components
             .Where(c => !typeId.HasValue || c.Type == typeId)
+            .OrderBy(c => c.Id)
             .AsNoTracking()
             .Include(c => c.Specifications)
             .Skip(pageIndex * pageSize)

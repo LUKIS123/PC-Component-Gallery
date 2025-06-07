@@ -26,9 +26,7 @@
 		<ItemGroup>
 			<EsprojDistFiles Include="..\ComponentGallery.Client\dist\**\*" />
 		</ItemGroup>
-		<Copy SourceFiles="@(EsprojDistFiles)"
-              DestinationFiles="@(EsprojDistFiles->'wwwroot\%(RecursiveDir)%(Filename)%(Extension)')"
-              SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(EsprojDistFiles)" DestinationFiles="@(EsprojDistFiles->'wwwroot\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
 	</Target>
 
 	<ItemGroup>

@@ -4,5 +4,6 @@ public enum ResourceType
 {
     Default = 0,
     Component = 1,
-    Background = 2
+    Background = 2,
+    PcBuild = 3,
 }
