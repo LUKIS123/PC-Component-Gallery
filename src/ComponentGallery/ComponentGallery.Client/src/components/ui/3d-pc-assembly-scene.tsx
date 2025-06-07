@@ -29,11 +29,7 @@ export function replaceRAM(componentId: number | string) {
     gltfLoaderRef,
     caseModelRef,
     ramRef,
-    `/api/assents/components/${componentId}/main`,
-    motherboardRef,
-    cpuRef,
-    ramRef,
-    gpuRef
+    `/api/assents/components/${componentId}/main`
   );
   return true;
 }
@@ -47,11 +43,7 @@ export function replaceCPU(componentId: number | string) {
     gltfLoaderRef,
     caseModelRef,
     cpuRef,
-    `/api/assents/components/${componentId}/main`,
-    motherboardRef,
-    cpuRef,
-    ramRef,
-    gpuRef
+    `/api/assents/components/${componentId}/main`
   );
   return true;
 }
@@ -65,11 +57,7 @@ export function replaceMB(componentId: number | string) {
     gltfLoaderRef,
     caseModelRef,
     motherboardRef,
-    `/api/assents/components/${componentId}/main`,
-    motherboardRef,
-    cpuRef,
-    ramRef,
-    gpuRef
+    `/api/assents/components/${componentId}/main`
   );
   return true;
 }
@@ -83,11 +71,7 @@ export function replaceGPU(componentId: number | string) {
     gltfLoaderRef,
     caseModelRef,
     gpuRef,
-    `/api/assents/components/${componentId}/main`,
-    motherboardRef,
-    cpuRef,
-    ramRef,
-    gpuRef
+    `/api/assents/components/${componentId}/main`
   );
   return true;
 }
@@ -173,14 +157,10 @@ export default Scene;
 
 // Oryginalna funkcja replaceComponent pozostaje bez zmian
 function replaceComponent(
-  loader,
-  parent,
-  oldComponent,
-  newComponentGLBPath,
-  motherboard,
-  cpu,
-  ram,
-  gpu
+  loader: GLTFLoader,
+  parent: Object3D<Object3DEventMap>,
+  oldComponent: Object3D<Object3DEventMap>,
+  newComponentGLBPath: string
 ) {
   // Załaduj nowy model komponentu
   loader.load(
@@ -197,12 +177,15 @@ function replaceComponent(
       // Usuń stary komponent
       parent.remove(oldComponent);
       oldComponent.traverse((child) => {
-        if (child.geometry) child.geometry.dispose();
-        if (child.material) {
-          if (Array.isArray(child.material)) {
-            child.material.forEach((mat) => mat.dispose());
-          } else {
-            child.material.dispose();
+        // Check if child is a Mesh before accessing geometry or material
+        if (child instanceof THREE.Mesh) {
+          if (child.geometry) child.geometry.dispose();
+          if (child.material) {
+            if (Array.isArray(child.material)) {
+              child.material.forEach((mat) => mat.dispose());
+            } else {
+              child.material.dispose();
+            }
           }
         }
       });

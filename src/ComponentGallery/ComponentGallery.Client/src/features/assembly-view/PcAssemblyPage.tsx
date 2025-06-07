@@ -23,13 +23,24 @@ import {
   replaceGPU,
 } from "@/components/ui/3d-pc-assembly-scene";
 
+// First, define interfaces for your data types
+interface Component {
+  id: number;
+  name: string;
+  price: number;
+  imageUrl?: string;
+  type: number;
+}
+
 export function PcAssemblyPage() {
   const { pcBuildId } = useParams();
   const dataService = usePcBuildsDataService();
   const componentTypesDataService = useComponentTypeDataService();
 
-  // Stan dla wybranego komponentu
-  const [selectedComponent, setSelectedComponent] = useState(null);
+  // Fix the type for selectedComponent
+  const [selectedComponent, setSelectedComponent] = useState<Component | null>(
+    null
+  );
 
   // Pobierz dane o PC build
   const { data: pcBuild, isLoading: isPcBuildLoading } = useQuery({
@@ -59,10 +70,10 @@ export function PcAssemblyPage() {
     });
 
   // Funkcja do obsługi kliknięcia komponentu (na razie pusta)
-  const handleComponentClick = (component) => {
+  const handleComponentClick = (component: Component) => {
     console.log("Selected component:", component);
     setSelectedComponent(component);
-    // TODO: Tu później dodamy logikę podmiany komponentu w scenie 3D
+
     // W zależności od typu komponentu, wywołaj odpowiednią funkcję
     if (component.type === 1) {
       // CPU - procesor
@@ -217,21 +228,38 @@ export function PcAssemblyPage() {
 }
 
 // Komponent pomocniczy do pobierania komponentów dla danego typu
-function ComponentsByType({ typeId, onComponentClick }) {
+// Add types to ComponentsByType props
+interface ComponentsByTypeProps {
+  typeId: number | string;
+  onComponentClick: (component: Component) => void;
+}
+
+function ComponentsByType({ typeId, onComponentClick }: ComponentsByTypeProps) {
   const componentsDataService = useComponentsDataService();
 
+  // Remove the explicit Component[] type and use type assertion inside
   const { data: components = [], isLoading } = useQuery({
     queryKey: ["components", typeId],
     queryFn: async () => {
       try {
         const data = await componentsDataService.getComponents(0, typeId);
-        return data || []; // Return empty array instead of undefined
+
+        // Map ComponentDetails to Component, adding missing properties if needed
+        const componentData = (data || []).map((item) => ({
+          ...item,
+          // Convert id from string to number
+          id: typeof item.id === "string" ? parseInt(item.id, 10) : item.id,
+          // Add type property if missing, using typeId as fallback
+          type: Number(typeId),
+        })) as Component[];
+
+        return componentData;
       } catch (error) {
         console.error(`Error fetching components for type ${typeId}:`, error);
-        return []; // Return empty array on error
+        return [] as Component[];
       }
     },
-    enabled: !!typeId, // Only run query if typeId exists
+    enabled: !!typeId,
   });
 
   if (isLoading) {
