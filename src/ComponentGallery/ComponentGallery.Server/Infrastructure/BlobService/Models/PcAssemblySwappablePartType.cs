@@ -2,9 +2,9 @@
 
 public enum PcAssemblySwappablePartType
 {
-    Case = 1,
+    CASE = 1,
     CPU = 2,
     GPU = 3,
-    Motherboard = 3,
+    MB = 3,
     RAM = 4
 }

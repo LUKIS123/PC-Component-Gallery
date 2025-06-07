@@ -17,7 +17,7 @@ export function Layout() {
       </Box>
 
       {/* Footer Section - will stick to bottom */}
-      <Box textAlign="center" py="2" bg="gray.800" color="white">
+      <Box textAlign="center" py="1" bg="gray.800" color="white">
         <Text>© 2025 PC Component Gallery | All Rights Reserved</Text>
       </Box>
     </Flex>

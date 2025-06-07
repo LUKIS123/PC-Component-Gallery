@@ -7,7 +7,7 @@ import * as THREE from "three";
 import { EXRLoader, GLTFLoader } from "three/examples/jsm/Addons.js";
 
 function Scene() {
-  const { componentId } = useParams();
+  const { pcBuildId } = useParams();
 
   useEffect(() => {
     const test = new SceneInit("myThreeJsCanvas");
@@ -25,7 +25,7 @@ function Scene() {
     let caseModel, motherboard, cpu, ram;
 
     gltfLoader.load(
-      `/api/assents/components/9/main`, // struktura url: api/assets/components/{componentID}/{cokolwiek}, zwraca gltf z odniesieniem do tekstur
+      `/api/assents/pcbuilds/${pcBuildId}/main`,
       (gltf) => {
         gltf.scene.traverse((node) => {
           if (node instanceof THREE.Mesh) {
@@ -307,10 +307,9 @@ function replaceComponent(
 //   });
 // }
 
-
 function replaceComponent4(loader, parent, oldComponent, newGLB) {
   // 1️⃣  zapisz GLOBALNĄ (światową) transformację starego RAM-u
-  const worldPos  = new THREE.Vector3();
+  const worldPos = new THREE.Vector3();
   const worldQuat = new THREE.Quaternion();
   const worldScale = new THREE.Vector3();
 
@@ -321,7 +320,7 @@ function replaceComponent4(loader, parent, oldComponent, newGLB) {
   // 2️⃣  wyrzuć stary model z rodzica i zwolnij zasoby
   parent.remove(oldComponent);
   oldComponent.traverse((n) => {
-    if (n.geometry)  n.geometry.dispose();
+    if (n.geometry) n.geometry.dispose();
     if (n.material) {
       Array.isArray(n.material)
         ? n.material.forEach((m) => m.dispose())
@@ -333,7 +332,7 @@ function replaceComponent4(loader, parent, oldComponent, newGLB) {
   loader.load(newGLB, (gltf) => {
     /** nowy obiekt, zwykle całe gltf.scene albo jego pierwszy mesh */
     const newComp = gltf.scene;
-    newComp.name = oldComponent.name;       // zachowaj nazwę (np. "RAM")
+    newComp.name = oldComponent.name; // zachowaj nazwę (np. "RAM")
 
     // 4️⃣  nadaj mu TĘ SAMĄ globalną transformację
     newComp.position.copy(worldPos);
@@ -346,7 +345,7 @@ function replaceComponent4(loader, parent, oldComponent, newGLB) {
 
     // 5️⃣  dodaj do TEGO SAMEGO rodzica
     parent.add(newComp);
-    
+
     // odswiezanie macierzy świata
     newRam.updateWorldMatrix(true, true);
     parent.updateWorldMatrix(true, true);
