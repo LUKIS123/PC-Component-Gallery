@@ -9,7 +9,6 @@ import {
   Accordion,
   Span,
   Image,
-  Button,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
@@ -17,6 +16,12 @@ import { usePcBuildsDataService } from "../assembly-builds-list/services/pc-buil
 import { useComponentTypeDataService } from "../components-list/services/component-type-data-service";
 import { useComponentsDataService } from "../components-list/services/components-data-service";
 import { useState } from "react";
+import {
+  replaceRAM,
+  replaceCPU,
+  replaceMB,
+  replaceGPU,
+} from "@/components/ui/3d-pc-assembly-scene";
 
 export function PcAssemblyPage() {
   const { pcBuildId } = useParams();
@@ -57,7 +62,21 @@ export function PcAssemblyPage() {
   const handleComponentClick = (component) => {
     console.log("Selected component:", component);
     setSelectedComponent(component);
-    // Tu później dodamy logikę podmiany komponentu w scenie 3D
+    // TODO: Tu później dodamy logikę podmiany komponentu w scenie 3D
+    // W zależności od typu komponentu, wywołaj odpowiednią funkcję
+    if (component.type === 1) {
+      // CPU - procesor
+      replaceCPU(component.id);
+    } else if (component.type === 2) {
+      // MB - płyta główna
+      replaceMB(component.id);
+    } else if (component.type === 3) {
+      // RAM - pamięć RAM
+      replaceRAM(component.id);
+    } else if (component.type === 4) {
+      // GPU - karta graficzna
+      replaceGPU(component.id);
+    }
   };
 
   if (isPcBuildLoading || isComponentTypesLoading) {
