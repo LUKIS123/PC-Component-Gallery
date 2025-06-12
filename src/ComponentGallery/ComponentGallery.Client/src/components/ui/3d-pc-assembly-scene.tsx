@@ -13,10 +13,10 @@ let cpuRef: Object3D<Object3DEventMap> | undefined | null = null;
 let ramRef: Object3D<Object3DEventMap> | undefined | null = null;
 let gpuRef: Object3D<Object3DEventMap> | undefined | null = null;
 
-const caseComponentName = "Case"; // TODO: Ustalić wspólne nazwy dla komponentów, w innym jest 'CASE'
+const caseComponentName = "CASE";
 const ramComponentName = "RAM";
 const cpuComponentName = "CPU";
-const motherboardComponentName = "MB"; // TODO: Ustalić wspólne nazwy dla komponentów, w innym jest 'Motherboard'
+const motherboardComponentName = "MB";
 const gpuComponentName = "GPU";
 
 // Eksportowane funkcje do podmiany komponentów
