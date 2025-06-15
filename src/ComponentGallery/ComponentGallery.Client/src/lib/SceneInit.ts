@@ -199,7 +199,7 @@ export default class SceneInit {
 
     this.camera.position.copy(cameraPosition);
 
-    this.setCameraZoomBounries(cameraDistance * 2, maxDim);
+   this.setCameraZoomBoundaries(cameraDistance * 2, maxDim);
 
     this.showcase = showcase;
   }
