@@ -1,7 +1,5 @@
 import { Box, Button, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import { Link } from "react-router";
-import { useComponentTypeDataService } from "../components-list/services/component-type-data-service";
-import { useQuery } from "@tanstack/react-query";
 
 export function IndexPage() {
 

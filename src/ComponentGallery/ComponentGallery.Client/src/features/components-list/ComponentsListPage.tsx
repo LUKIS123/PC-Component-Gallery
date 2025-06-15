@@ -4,15 +4,13 @@ import {
   Heading,
   Image,
   Input,
-  Portal,
-  Select,
   SimpleGrid,
   Stack,
   Text,
   VStack
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Link, useParams } from "react-router";
 import { useComponentTypeDataService } from "./services/component-type-data-service";
 import { useComponentsDataService } from "./services/components-data-service";
@@ -61,7 +59,6 @@ export function ComponentsListPage() {
   };
 
   const [filters, setFilters] = useState<{ [key: string]: string }>({});
-  const [isFiltersApplied, setIsFiltersApplied] = useState(true);
 
   if (isComponentsLoading || isComponentTypeLoading) {
     return <VStack>Loading...</VStack>;
@@ -122,8 +119,6 @@ export function ComponentsListPage() {
                 component.name.toLowerCase().includes(searchQuery.toLowerCase())
               )
                 .filter((component) => {
-                  if (!isFiltersApplied) return true;
-
                   return Object.entries(filters).every(([specName, filterValue]) => {
                     if (!filterValue) return true; // Skip empty filters
                     const specValue = Object.entries(component.specification).find(x => x[0] == specName);
@@ -214,7 +209,7 @@ export function ComponentsListPage() {
                           id={`${specName}-${'all'}`}
                           name={specName}
                           value={''}
-                          onChange={(e) => {
+                          onChange={() => {
                             const newValue = '';
                             setFilters(prev => ({
                               ...prev,

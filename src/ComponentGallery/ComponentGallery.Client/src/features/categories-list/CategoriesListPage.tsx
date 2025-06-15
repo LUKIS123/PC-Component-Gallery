@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Image, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { useComponentTypeDataService } from "../components-list/services/component-type-data-service";
@@ -41,7 +41,7 @@ export function CategoriesListPage() {
             </Heading>
             <Stack direction="row" gap={8} justify="center" wrap="wrap">
                 {componentTypes.map((category) => (
-                    < Link to={`/components/${category.id}`}>
+                    < Link to={`/components/${category.id}`} key={category.id}>
                         <Button
                             as="div" // Ensure the button is a div so that bgImage can apply correctly
                             variant="solid"
