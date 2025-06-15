@@ -121,22 +121,11 @@ function Scene() {
         // Reszta kodu bez zmian...
         const box = new THREE.Box3().setFromObject(gltf.scene);
         const center = new THREE.Vector3();
-        const size = new THREE.Vector3();
         box.getCenter(center);
-        box.getSize(size);
-
+        
         mainScene.position.sub(center); // Przesunięcie sceny do środka
 
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const fov = test.camera.fov * (Math.PI / 180);
-        const cameraDistance = maxDim / (2 * Math.tan(fov / 2));
-        test.camera.position.set(
-          center.x,
-          center.y + maxDim,
-          center.z + cameraDistance
-        );
-
-        test.setCameraZoomBounries(cameraDistance * 2, maxDim);
+        test.setCameraSettings(new THREE.Box3().setFromObject(mainScene), true);
 
 
         test.camera.lookAt(center);
