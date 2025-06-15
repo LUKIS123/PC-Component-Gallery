@@ -81,7 +81,6 @@ function Scene() {
 
   useEffect(() => {
     const test = new SceneInit("myThreeJsCanvas");
-    test.animate();
 
     const exrLoader = new EXRLoader();
     exrLoader.load(`/api/assents/backgrounds/1`, (texture) => {
@@ -128,6 +127,8 @@ function Scene() {
         test.camera.lookAt(center);
         test.camera.updateProjectionMatrix();
         test.scene.add(mainScene);
+        test.render();
+        test.animate();
       },
       (xhr) => {
         console.log((xhr.loaded / xhr.total) * 100 + "% loaded gltf model");

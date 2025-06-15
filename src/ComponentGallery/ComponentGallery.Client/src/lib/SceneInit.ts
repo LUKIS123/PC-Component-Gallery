@@ -38,7 +38,6 @@ export default class SceneInit {
       // NOTE: Anti-aliasing smooths out the edges.
       antialias: true,
     });
-    this.setSize();
     // this.renderer.shadowMap.enabled = true;
     const canvaDiv = document.getElementById("canvasDiv");
     canvaDiv?.appendChild(this.renderer.domElement);
