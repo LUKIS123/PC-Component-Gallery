@@ -38,8 +38,8 @@ export function PcAssemblyPage() {
   const componentTypesDataService = useComponentTypeDataService();
 
   // Fix the type for selectedComponent
-  const [selectedComponent, setSelectedComponent] = useState<Component | null>(
-    null
+  const [selectedComponents, setSelectedComponents] = useState<Component[]>(
+    []
   );
 
   // Pobierz dane o PC build
@@ -72,7 +72,24 @@ export function PcAssemblyPage() {
   // Funkcja do obsługi kliknięcia komponentu (na razie pusta)
   const handleComponentClick = (component: Component) => {
     console.log("Selected component:", component);
-    setSelectedComponent(component);
+    console.log(selectedComponents);
+    console.log(selectedComponents.filter(c => c.type !== component.type));
+
+    if (selectedComponents.some(c => c.id === component.id)) {
+      return;
+    }
+    if (selectedComponents.some(c => c.type === component.type)) {
+      const selectedComponentsWihtoutSameType = selectedComponents.filter(c => c.type !== component.type);
+      setSelectedComponents(
+        [
+          ...selectedComponentsWihtoutSameType,
+          component
+        ]
+      );
+    }
+    else {
+      setSelectedComponents([...selectedComponents, component]);
+    }
 
     // W zależności od typu komponentu, wywołaj odpowiednią funkcję
     if (component.type === 1) {
@@ -105,7 +122,7 @@ export function PcAssemblyPage() {
         <Box padding={4}>
           {/* Header Section */}
           <Heading as="h1" size="2xl" marginBottom={4}>
-            {pcBuild.name}
+            Build Your PC
           </Heading>
 
           {/* 3D Model Section */}
@@ -124,28 +141,6 @@ export function PcAssemblyPage() {
               <Scene />
             </Box>
           </Box>
-
-          {/* Component Info */}
-          <Grid templateColumns="repeat(2, 1fr)" gap={6}>
-            <GridItem>
-              <Text fontSize="lg" color="gray.200" marginBottom={6}>
-                {pcBuild.description}
-              </Text>
-            </GridItem>
-
-            <GridItem>
-              <Stack gap={4}>
-                <Text fontSize="xl" fontWeight="bold" color="teal.600">
-                  {new Intl.NumberFormat("pl-PL", {
-                    style: "currency",
-                    currency: "PLN",
-                  }).format(pcBuild.price)}
-                </Text>
-
-                <Box height="1px" backgroundColor="gray.300" width="100%" />
-              </Stack>
-            </GridItem>
-          </Grid>
         </Box>
       </GridItem>
 
@@ -207,18 +202,22 @@ export function PcAssemblyPage() {
           )}
 
           {/* Wyświetlanie informacji o wybranym komponencie */}
-          {selectedComponent && (
+          {selectedComponents && selectedComponents.length != 0 && (
             <Box mt={4} p={4} backgroundColor="gray.700" borderRadius="md">
               <Heading size="md" mb={2}>
                 Chosen Component
               </Heading>
-              <Text>{selectedComponent.name}</Text>
-              <Text fontWeight="bold" color="teal.500">
-                {new Intl.NumberFormat("pl-PL", {
-                  style: "currency",
-                  currency: "PLN",
-                }).format(selectedComponent.price)}
-              </Text>
+              {(selectedComponents || []).map((component) => (
+                <Box>
+                  <Text>{component.name}</Text>
+                  <Text fontWeight="bold" color="teal.500">
+                    {new Intl.NumberFormat("pl-PL", {
+                      style: "currency",
+                      currency: "PLN",
+                    }).format(component.price)}
+                  </Text>
+                </Box>
+              ))}
             </Box>
           )}
         </Box>
@@ -242,7 +241,7 @@ function ComponentsByType({ typeId, onComponentClick }: ComponentsByTypeProps) {
     queryKey: ["components", typeId],
     queryFn: async () => {
       try {
-        const data = await componentsDataService.getComponents(0, typeId);
+        const data = await componentsDataService.getComponents(typeId);
 
         // Map ComponentDetails to Component, adding missing properties if needed
         const componentData = (data || []).map((item) => ({

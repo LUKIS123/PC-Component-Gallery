@@ -7,7 +7,7 @@ import {
   SimpleGrid,
   Stack,
   Text,
-  VStack,
+  VStack
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -18,13 +18,27 @@ import { useComponentsDataService } from "./services/components-data-service";
 export function ComponentsListPage() {
   const dataService = useComponentsDataService();
   const componentTypesDataService = useComponentTypeDataService();
-  const [page] = useState(0);
   const { typeId } = useParams();
   const { data: components, isLoading: isComponentsLoading } = useQuery({
-    queryKey: ["components", page],
+    queryKey: ["components"],
     queryFn: () =>
-      dataService.getComponents(page, typeId ? parseInt(typeId, 10) : 0),
+      dataService.getComponents(typeId ? parseInt(typeId, 10) : 0),
   });
+
+  type SpecsAccumulator = { [key: string]: any[] };
+  const allSpecs = components?.reduce(
+    (acc: SpecsAccumulator, component) => {
+      Object.entries(component.specification).forEach(([key, value]) => {
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(value);
+      });
+      return acc;
+    },
+    {} as SpecsAccumulator
+  );
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const { data: componentType, isLoading: isComponentTypeLoading } = useQuery({
     queryKey: ["componentType"],
@@ -33,6 +47,18 @@ export function ComponentsListPage() {
         typeId ? parseInt(typeId, 10) : 0
       ),
   });
+
+  const resetFilters = () => {
+    setFilters({});
+    document.querySelectorAll("input[type='radio']").forEach((input) => {
+      (input as HTMLInputElement).checked = false;
+    });
+    document.querySelectorAll(".default-spec").forEach((input) => {
+      (input as HTMLInputElement).checked = true;
+    });
+  };
+
+  const [filters, setFilters] = useState<{ [key: string]: string }>({});
 
   if (isComponentsLoading || isComponentTypeLoading) {
     return <VStack>Loading...</VStack>;
@@ -77,106 +103,161 @@ export function ComponentsListPage() {
           {componentType?.name}
         </Heading>
       </Box>
+      <Stack direction="row">
+        <Stack direction="column">
+          <Input
+            placeholder="Search components"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            width="300px"
+          />
 
-      {/* Search and Filter Section */}
-      <Box
-        marginTop={4}
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <Input
-          placeholder="Search components"
-          // value={searchQuery}
-          // onChange={handleSearch}
-          width="300px"
-        />
-        {/* <Select
-          value={selectedType}
-          onChange={(e) => setSelectedType(e.target.value)}
-          placeholder="Filter by Type"
-          width="200px"
-        >
-          <option value="1">Type 1</option>
-          <option value="2">Type 2</option>
-          <option value="3">Type 3</option>
-        </Select> */}
-        <Button colorScheme="cyan">Apply Filters</Button>
-      </Box>
-
-      {/* Components List Section */}
-      <SimpleGrid columns={[1, 2, 3]} gap={4} marginTop={8}>
-        {components
-          // .filter((component) => component.name.toLowerCase().includes(searchQuery.toLowerCase()))
-          // .filter((component) => (selectedType ? component.type.toString() === selectedType : true))
-          .map((component) => (
-            <Box
-              key={component.id}
-              borderRadius="md"
-              boxShadow="lg"
-              bg="gray.700"
-              padding={4}
-            >
-              <Box>
-                <Image
-                  src={component.imageUrl}
-                  alt={component.name}
-                  borderRadius="md"
-                  boxSize="200px"
-                  objectFit="cover"
-                />
-                <Stack gap={2} marginTop={4}>
-                  <Heading size="md">{component.name}</Heading>
-                  <Text>{component.description}</Text>
-                  <Text fontWeight="bold" color="teal.600">
-                    {new Intl.NumberFormat("pl-PL", {
-                      style: "currency",
-                      currency: "PLN",
-                    }).format(component.price)}
-                  </Text>
-                  {/* Specifications (optional) */}
-                  {/* <Text>
-                    <strong>Clock Speed:</strong> {component.specification.ClockSpeed}
-                  </Text>
-                  <Text>
-                    <strong>Cores:</strong> {component.specification.Cores}
-                  </Text>
-                  <Text>
-                    <strong>Threads:</strong> {component.specification.Threads}
-                  </Text> */}
-                  <Link
-                    to={`/components/3d/${component.id}`} // Navigate to the 3D view page
+          <Box width='70vw'>
+            {/* Components List Section */}
+            <SimpleGrid columns={[1, 2, 3]} gap={4} marginTop={8}>
+              {components.filter((component) =>
+                component.name.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+                .filter((component) => {
+                  return Object.entries(filters).every(([specName, filterValue]) => {
+                    if (!filterValue) return true; // Skip empty filters
+                    const specValue = Object.entries(component.specification).find(x => x[0] == specName);
+                    if (!specValue) return false; // If spec not found, skip
+                    return specValue[1] == filterValue;
+                  });
+                })
+                .map((component) => (
+                  <Box
+                    key={component.id}
+                    borderRadius="md"
+                    boxShadow="lg"
+                    bg="gray.700"
+                    padding={4}
                   >
-                    <Button
-                      colorScheme="teal" // Base color for the button
-                      backgroundColor="blue.600" // Default blue background
-                      color="white" // Text color
-                      fontSize="lg"
-                      fontWeight="bold"
-                      borderRadius="md" // Rounded corners
-                      padding="12px 24px" // Padding for the button
-                      _hover={{
-                        backgroundColor: "teal.500", // Hover effect with teal
-                        boxShadow: "lg", // Adding shadow on hover
-                        transform: "scale(1.05)", // Slight scale-up effect on hover
-                      }}
-                      _active={{
-                        backgroundColor: "blue.700", // Darker blue when button is clicked
-                        transform: "scale(0.98)", // Slight scale-down effect on click
-                      }}
-                      _focus={{
-                        outline: "none", // Removing default outline when focused
-                        boxShadow: "0 0 0 3px rgba(0, 123, 255, 0.5)", // Focus ring with blue
-                      }}
-                    >
-                      View in 3D
-                    </Button>
-                  </Link>
-                </Stack>
-              </Box>
-            </Box>
-          ))}
-      </SimpleGrid>
+                    <Box>
+                      <Image
+                        src={component.imageUrl}
+                        alt={component.name}
+                        borderRadius="md"
+                        boxSize="200px"
+                        objectFit="cover"
+                      />
+                      <Stack gap={2} marginTop={4}>
+                        <Heading size="md">{component.name}</Heading>
+                        <Text>{component.description}</Text>
+                        <Text fontWeight="bold" color="teal.600">
+                          {new Intl.NumberFormat("pl-PL", {
+                            style: "currency",
+                            currency: "PLN",
+                          }).format(component.price)}
+                        </Text>
+                        <Link to={`/components/3d/${component.id}`}>
+                          <Button
+                            colorScheme="teal"
+                            backgroundColor="blue.600"
+                            color="white"
+                            fontSize="lg"
+                            fontWeight="bold"
+                            borderRadius="md"
+                            padding="12px 24px"
+                            _hover={{
+                              backgroundColor: "teal.500",
+                              boxShadow: "lg",
+                              transform: "scale(1.05)",
+                            }}
+                            _active={{
+                              backgroundColor: "blue.700",
+                              transform: "scale(0.98)",
+                            }}
+                            _focus={{
+                              outline: "none",
+                              boxShadow: "0 0 0 3px rgba(0, 123, 255, 0.5)",
+                            }}
+                          >
+                            View in 3D
+                          </Button>
+                        </Link>
+                      </Stack>
+                    </Box>
+                  </Box>
+                ))}
+            </SimpleGrid>
+          </Box>
+        </Stack>
+        {/* Search and Filter Section */}
+        <Box
+          marginTop={4}
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          width={'30vw'}
+        >
+          <Stack>
+            <Stack direction="column">
+              <Heading fontWeight="bold">Filters</Heading>
+              {Object.entries(allSpecs || {}).map(([specName, specValues]) => {
+
+                return (
+                  <Box key={specName}>
+                    <Text fontWeight="bold">{specName}</Text>
+                    <Stack direction="row" alignItems="center">
+                      <Box key={`${specName}-${'all'}`}>
+                        <input
+                          className={'default-spec'}
+                          defaultChecked={true}
+                          type="radio"
+                          id={`${specName}-${'all'}`}
+                          name={specName}
+                          value={''}
+                          onChange={() => {
+                            const newValue = '';
+                            setFilters(prev => ({
+                              ...prev,
+                              [specName]: newValue
+                            }));
+                          }}
+                          style={{ marginRight: '8px' }}
+                        />
+                        <label htmlFor={`${specName}-${'all'}`}>All</label>
+                      </Box>
+                      {Array.from(new Set(specValues)).map((value) => (
+                        <Box key={`${specName}-${value}`}>
+                          <input
+                            type="radio"
+                            id={`${specName}-${value}`}
+                            name={specName}
+                            value={value}
+                            onChange={(e) => {
+                              const newValue = e.target.checked ? value : '';
+                              setFilters(prev => ({
+                                ...prev,
+                                [specName]: newValue
+                              }));
+                            }}
+                            style={{ marginRight: '8px' }}
+                          />
+                          <label htmlFor={`${specName}-${value}`}>{value}</label>
+                        </Box>
+                      ))}
+                    </Stack>
+                  </Box>
+                )
+              }
+              )
+              }
+            </Stack>
+
+            <Button
+              colorScheme="cyan"
+              onClick={() => {
+                resetFilters();
+              }}
+            >
+              Reset Filters
+            </Button>
+          </Stack>
+        </Box>
+      </Stack>
     </Box>
   );
 }

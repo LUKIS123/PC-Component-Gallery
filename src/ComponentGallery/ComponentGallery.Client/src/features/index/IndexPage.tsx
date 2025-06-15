@@ -2,6 +2,7 @@ import { Box, Button, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import { Link } from "react-router";
 
 export function IndexPage() {
+
   return (
     <Stack h="100vh" direction="column">
       <Box bg="black" color="white">
@@ -59,7 +60,7 @@ export function IndexPage() {
         {/* Featured Categories Section */}
         <Stack gap={8} w={["100%", "75%"]} mx="auto" p={4}>
           <Heading as="h2" size="lg" color="white" textAlign="center">
-            Explore Categories
+            Explore Featured Categories
           </Heading>
           <Stack direction="row" gap={8} justify="center" wrap="wrap">
             {/* Category Buttons with Background Images */}
@@ -159,6 +160,26 @@ export function IndexPage() {
                 Storage
               </Button>
             </Link>
+
+            <Link to="/categoriesList">
+              <Button
+                as="div" // Ensure the button is a div so that bgImage can apply correctly
+                variant="solid"
+                color="white"
+                bgImage="url('https://static.pcbuilder.net/assets/images/builds/pc-builds.jpg')"
+                bgSize="cover"
+                bgPos="center"
+                h="200px"
+                w="200px"
+                _hover={{ opacity: 0.8 }}
+                fontSize="xl"
+                fontWeight="bold"
+                colorScheme="cyan"
+                textAlign="center"
+              >
+                Other...
+              </Button>
+            </Link>
           </Stack>
         </Stack>
 
@@ -176,7 +197,7 @@ export function IndexPage() {
             mt={4}
             bg="rgba(0, 0, 0, 0.7)"
           >
-            <Link to="/pcBuilds">
+            <Link to="/pcAssembly/2">
               <Button
                 as="div"
                 variant="solid"

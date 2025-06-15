@@ -13,12 +13,11 @@ internal static class GetComponentsListEndpoint
         endpointRouteBuilder.MapGet(
             "/api/components",
             async (
-                [FromQuery] int pageIndex,
                 [FromQuery] int? typeId,
                 GetComponentsListHandler handler,
                 CancellationToken cancellationToken) =>
         {
-            var result = await handler.Handle(pageIndex, typeId, cancellationToken);
+            var result = await handler.Handle(typeId, cancellationToken);
             return Results.Ok(new GetComponentsListResponse(result));
         });
     }

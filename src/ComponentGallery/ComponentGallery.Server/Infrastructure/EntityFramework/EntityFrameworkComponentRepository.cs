@@ -19,14 +19,13 @@ public class EntityFrameworkComponentRepository(GalleryMainDbContext dbContext) 
             : null;
     }
 
-    public async Task<List<ComputerComponent>> GetComponentsListAsync(int pageIndex, int? typeId, int pageSize, CancellationToken cancellationToken)
+    public async Task<List<ComputerComponent>> GetComponentsListAsync(int? typeId, int pageSize, CancellationToken cancellationToken)
     {
         var result = await dbContext.Components
             .Where(c => !typeId.HasValue || c.Type == typeId)
             .OrderBy(c => c.Id)
             .AsNoTracking()
             .Include(c => c.Specifications)
-            .Skip(pageIndex * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 

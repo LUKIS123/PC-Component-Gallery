@@ -7,9 +7,9 @@ interface GetComponentsResponse {
 
 export function useComponentsDataService() {
   return {
-    async getComponents(pageIndex: number, typeId: number | string) {
+    async getComponents(typeId: number | string) {
       const response = await axios.get<GetComponentsResponse>(
-        `/api/components?pageIndex=${pageIndex}&typeId=${typeId}`
+        `/api/components?typeId=${typeId}`
       );
       return response.data.components;
     },
