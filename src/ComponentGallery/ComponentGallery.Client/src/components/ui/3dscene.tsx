@@ -44,6 +44,8 @@ function Scene() {
         box.getCenter(center);
         box.getSize(size);
 
+        gltf.scene.position.sub(center); // Center the model in the scene
+
         // Adjust the camera position based on the model's size
         const maxDim = Math.max(size.x, size.y, size.z);
         const fov = test.camera.fov * (Math.PI / 180); // Convert FOV to radians

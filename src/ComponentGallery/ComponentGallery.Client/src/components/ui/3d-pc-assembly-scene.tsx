@@ -125,6 +125,8 @@ function Scene() {
         box.getCenter(center);
         box.getSize(size);
 
+        mainScene.position.sub(center); // Przesunięcie sceny do środka
+
         const maxDim = Math.max(size.x, size.y, size.z);
         const fov = test.camera.fov * (Math.PI / 180);
         const cameraDistance = maxDim / (2 * Math.tan(fov / 2));
@@ -139,7 +141,7 @@ function Scene() {
 
         test.camera.lookAt(center);
         test.camera.updateProjectionMatrix();
-        test.scene.add(gltf.scene);
+        test.scene.add(mainScene);
       },
       (xhr) => {
         console.log((xhr.loaded / xhr.total) * 100 + "% loaded gltf model");
