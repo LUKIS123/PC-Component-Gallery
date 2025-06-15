@@ -134,6 +134,9 @@ function Scene() {
           center.z + cameraDistance
         );
 
+        test.setCameraZoomBounries(cameraDistance * 2, maxDim);
+
+
         test.camera.lookAt(center);
         test.camera.updateProjectionMatrix();
         test.scene.add(gltf.scene);

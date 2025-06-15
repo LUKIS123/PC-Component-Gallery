@@ -54,10 +54,11 @@ function Scene() {
           center.z + cameraDistance
         );
 
+        test.setCameraZoomBounries(cameraDistance * 2, maxDim);
+
         // Ensure the camera looks at the center of the model
         test.camera.lookAt(center);
         test.camera.updateProjectionMatrix();
-
         test.scene.add(gltf.scene);
       },
       // onProgress callback

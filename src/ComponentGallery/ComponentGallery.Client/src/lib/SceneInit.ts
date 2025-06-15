@@ -111,4 +111,9 @@ export default class SceneInit {
   onWindowResize() {
     this.setSize();
   }
+
+  setCameraZoomBounries(maxDistance: number, minDistance: number) { 
+    this.controls.maxDistance = maxDistance; // Maximum distance from the camera to the object
+    this.controls.minDistance = minDistance; // Minimum distance from the camera to the object
+  }
 }
