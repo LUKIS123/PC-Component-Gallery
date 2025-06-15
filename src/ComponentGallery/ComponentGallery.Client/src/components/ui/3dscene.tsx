@@ -32,30 +32,20 @@ function Scene() {
           }
         });
 
-        // Compute the bounding box of the loaded model
+        const mainScene = gltf.scene;
+
         const box = new THREE.Box3().setFromObject(gltf.scene);
-
-        // Get the center and size of the bounding box
         const center = new THREE.Vector3();
-        const size = new THREE.Vector3();
         box.getCenter(center);
-        box.getSize(size);
 
-        // Adjust the camera position based on the model's size
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const fov = test.camera.fov * (Math.PI / 180); // Convert FOV to radians
-        const cameraDistance = maxDim / (2 * Math.tan(fov / 2)); // Distance to fit the model
-        test.camera.position.set(
-          center.x,
-          center.y + maxDim,
-          center.z + cameraDistance
-        );
+        mainScene.position.sub(center); // Przesunięcie sceny do środka
 
-        // Ensure the camera looks at the center of the model
+        test.setCameraSettings(new THREE.Box3().setFromObject(mainScene), false);
+
+
         test.camera.lookAt(center);
         test.camera.updateProjectionMatrix();
-
-        test.scene.add(gltf.scene);
+        test.scene.add(mainScene);
       },
       // onProgress callback
       (xhr) => {

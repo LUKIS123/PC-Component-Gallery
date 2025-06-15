@@ -11,6 +11,8 @@ export default class SceneInit {
   private readonly directionalLight: THREE.DirectionalLight;
   private readonly directionalLight2: THREE.DirectionalLight;
   private readonly hemisphereLight: THREE.HemisphereLight;
+  private boundingBox: THREE.Box3 | null = null;
+  private showcase = false; // Flag to determine if the scene is a showcase
 
   constructor(private canvasId: string) {
     const fov = 45;
@@ -95,9 +97,26 @@ export default class SceneInit {
     // NOTE: Update uniform data on each render.
     // this.uniforms.u_time.value += this.clock.getDelta();
     this.setSize();
-    
+    this.checkFrustum();
     // this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.renderer.render(this.scene, this.camera);
+  }
+
+  checkFrustum() {
+    const frustum = new THREE.Frustum();
+    frustum.setFromProjectionMatrix(
+      new THREE.Matrix4().multiplyMatrices(
+        this.camera.projectionMatrix,
+        this.camera.matrixWorldInverse
+      )
+    );
+
+    if (this.boundingBox !== null && this.boundingBox.isEmpty() === false) {
+      if (!frustum.intersectsBox(this.boundingBox)) {
+        console.warn("Bounding box is not in the frustum of the camera.");
+        this.resetCameraPosition();
+      }
+    }
   }
 
   updateProjectionMatrix() {
@@ -111,4 +130,79 @@ export default class SceneInit {
   onWindowResize() {
     this.setSize();
   }
+
+  setCameraZoomBoundaries(maxDistance: number, minDistance: number) {
+    this.controls.maxDistance = maxDistance; // Maximum distance from the camera to the object
+    this.controls.minDistance = minDistance; // Minimum distance from the camera to the object
+  }
+
+  resetCameraPosition() {
+    if (this.boundingBox !== null) {
+      const center = new THREE.Vector3();
+      this.boundingBox.getCenter(center);
+      const size = new THREE.Vector3();
+      this.boundingBox.getSize(size);
+
+
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const fov = this.camera.fov * (Math.PI / 180);
+      const cameraDistance = maxDim / (2 * Math.tan(fov / 2));
+      const cameraPosition = new THREE.Vector3();
+
+      if (this.showcase) {
+        cameraPosition.set(0,
+          0,
+          maxDim + cameraDistance
+        );
+      } else {
+        cameraPosition.set(0,
+          maxDim + cameraDistance,
+          0
+        );
+      }
+
+      this.camera.position.copy(cameraPosition);
+      this.setCameraZoomBounries(cameraDistance * 2, maxDim);
+
+      this.camera.lookAt(center);
+      this.camera.updateProjectionMatrix();
+      this.controls.target.copy(center);
+      this.controls.update();
+    }
+  }
+
+  setCameraSettings(box: THREE.Box3, showcase: boolean) {
+    this.boundingBox = box;
+    // const boxHelper = new THREE.Box3Helper(box, new THREE.Color(0xff0000));
+    // this.scene.add(boxHelper);
+
+    const size = new THREE.Vector3();
+    box.getSize(size);
+
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const fov = this.camera.fov * (Math.PI / 180);
+    const cameraDistance = maxDim / (2 * Math.tan(fov / 2));
+
+    const cameraPosition = new THREE.Vector3();
+
+    if (showcase) {
+      cameraPosition.set(0,
+        0,
+        maxDim + cameraDistance
+      );
+    } else {
+      cameraPosition.set(0,
+        maxDim + cameraDistance,
+        0
+      );
+    }
+
+    this.camera.position.copy(cameraPosition);
+
+   this.setCameraZoomBoundaries(cameraDistance * 2, maxDim);
+
+    this.showcase = showcase;
+  }
+
 }
+
