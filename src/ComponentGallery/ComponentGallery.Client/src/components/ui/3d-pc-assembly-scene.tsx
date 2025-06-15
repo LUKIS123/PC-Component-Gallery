@@ -1,5 +1,5 @@
 import SceneInit from "@/lib/SceneInit";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import * as THREE from "three";
 import { EXRLoader, GLTFLoader } from "three/examples/jsm/Addons.js";
@@ -78,22 +78,42 @@ export function replaceGPU(componentId: number | string) {
 
 function Scene() {
   const { pcBuildId } = useParams();
+  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     const test = new SceneInit("myThreeJsCanvas");
 
     const exrLoader = new EXRLoader();
-    exrLoader.load(`/api/assents/backgrounds/1`, (texture) => {
-      texture.mapping = THREE.EquirectangularReflectionMapping;
-      test.scene.environment = texture;
+    const gltfLoader = new GLTFLoader();
+
+    const exrPromise = new Promise<THREE.Texture>((resolve, reject) => {
+      exrLoader.load(
+        `/api/assents/backgrounds/1`,
+        (texture) => {
+          texture.mapping = THREE.EquirectangularReflectionMapping;
+          resolve(texture);
+        },
+        undefined,
+        reject
+      );
     });
-    // Przypisz loader do zmiennej globalnej
-    gltfLoaderRef = new GLTFLoader();
-    // Ustawienia loadera
-    gltfLoaderRef.load(
-      `/api/assents/pcbuilds/${pcBuildId}/main`,
-      (gltf) => {
-        gltf.scene.traverse((node) => {
+
+    const gltfPromise = new Promise<any>((resolve, reject) => {
+      gltfLoader.load(
+        `/api/assents/pcbuilds/${pcBuildId}/background`,
+        (gltf) => resolve(gltf),
+        undefined,
+        reject
+      );
+    });
+    
+    
+    Promise.all([exrPromise, gltfPromise])
+    .then(([texture, gltf]) => {
+        test.scene.environment = texture;
+
+        gltf.scene.traverse((node: { material: { needsUpdate: boolean; }; }) => {
           if (node instanceof THREE.Mesh) {
             node.material.needsUpdate = true;
           }
@@ -118,7 +138,7 @@ function Scene() {
         const box = new THREE.Box3().setFromObject(gltf.scene);
         const center = new THREE.Vector3();
         box.getCenter(center);
-        
+
         mainScene.position.sub(center); // Przesunięcie sceny do środka
 
         test.setCameraSettings(new THREE.Box3().setFromObject(mainScene), true);
@@ -129,18 +149,52 @@ function Scene() {
         test.scene.add(mainScene);
         test.render();
         test.animate();
-      },
-      (xhr) => {
-        console.log((xhr.loaded / xhr.total) * 100 + "% loaded gltf model");
-      },
-      (error) => {
-        console.error("An error happened while loading the GLTF model:", error);
-      }
-    );
+        setLoading(false);
+      })
+        .catch((error) => {
+          console.error("Error loading assets:", error);
+          setLoading(false);
+        });
+
   }, [pcBuildId]);
 
   return (
     <div id="canvasDiv" style={{ height: "100%", width: "100%" }}>
+      {loading && (
+        <div
+          style={{
+            position: "relative",
+            left: 0,
+            top: 0,
+            width: "100%",
+            height: "100%",
+            background: "#2228",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 10,
+          }}
+        >
+          <div style={{
+            border: "8px solid #f3f3f3",
+            borderTop: "8px solid #14204a",
+            borderRadius: "50%",
+            width: "60px",
+            height: "60px",
+            animation: "spin 1s linear infinite"
+          }} />
+          <style>
+            {`
+              @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+              }
+            `}
+          </style>
+          Loading 3D Model...
+        </div>
+      )}
       <canvas id="myThreeJsCanvas"></canvas>
     </div>
   );
