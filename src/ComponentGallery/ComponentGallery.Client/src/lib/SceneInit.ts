@@ -8,9 +8,7 @@ export default class SceneInit {
   private readonly renderer: THREE.WebGLRenderer;
   private readonly controls: OrbitControls;
   private readonly ambientLight: THREE.AmbientLight;
-  private readonly directionalLight: THREE.DirectionalLight;
-  private readonly directionalLight2: THREE.DirectionalLight;
-  private readonly hemisphereLight: THREE.HemisphereLight;
+
   private boundingBox: THREE.Box3 | null = null;
   private showcase = false; // Flag to determine if the scene is a showcase
 
@@ -40,35 +38,20 @@ export default class SceneInit {
       // NOTE: Anti-aliasing smooths out the edges.
       antialias: true,
     });
-    this.setSize();
     // this.renderer.shadowMap.enabled = true;
     const canvaDiv = document.getElementById("canvasDiv");
     canvaDiv?.appendChild(this.renderer.domElement);
 
     // this.clock = new THREE.Clock();
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.addEventListener("change", () => {
+      this.render();
+    });
 
     // Increase the intensity of the ambient light
     this.ambientLight = new THREE.AmbientLight(0xffffff); // Increased intensity
     this.ambientLight.castShadow = true;
     this.scene.add(this.ambientLight);
-
-    this.hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x000000, 1); // Increased intensity
-    this.hemisphereLight.position.set(0, 0, 0);
-    this.hemisphereLight.castShadow = true;
-    this.scene.add(this.hemisphereLight);
-
-    // Increase the intensity of the directional light
-    this.directionalLight = new THREE.DirectionalLight(0xffffff); // Increased intensity
-    this.directionalLight.position.set(50, 32, 64);
-    this.directionalLight.castShadow = true;
-    this.scene.add(this.directionalLight);
-
-    this.directionalLight2 = new THREE.DirectionalLight(0xffffff); // Increased intensity
-    this.directionalLight2.position.set(-50, 32, -64);
-    this.directionalLight2.castShadow = true;
-    this.scene.add(this.directionalLight2);
-
 
     // if window resizes
     window.addEventListener("resize", () => this.onWindowResize(), false);
@@ -89,7 +72,7 @@ export default class SceneInit {
     // NOTE: Window is implied.
     // requestAnimationFrame(this.animate.bind(this));
     window.requestAnimationFrame(this.animate.bind(this));
-    this.render();
+    
     this.controls.update();
   }
 

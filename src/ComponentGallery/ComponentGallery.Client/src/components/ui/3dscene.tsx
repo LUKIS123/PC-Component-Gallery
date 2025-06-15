@@ -11,7 +11,6 @@ function Scene() {
 
   useEffect(() => {
     const test = new SceneInit("myThreeJsCanvas");
-    test.animate();
 
     const exrLoader = new EXRLoader();
     // struktura url: api/assets/backgrounds/{backgroundID}, narazie mamy tylko 1 i bez tabelki w bazie
@@ -46,6 +45,8 @@ function Scene() {
         test.camera.lookAt(center);
         test.camera.updateProjectionMatrix();
         test.scene.add(mainScene);
+        test.render();
+        test.animate();
       },
       // onProgress callback
       (xhr) => {
