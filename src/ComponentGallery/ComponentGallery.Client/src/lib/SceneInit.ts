@@ -47,6 +47,9 @@ export default class SceneInit {
 
     // this.clock = new THREE.Clock();
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.addEventListener("change", () => {
+      this.render();
+    });
 
     // Increase the intensity of the ambient light
     this.ambientLight = new THREE.AmbientLight(0xffffff); // Increased intensity
@@ -89,11 +92,12 @@ export default class SceneInit {
     // NOTE: Window is implied.
     // requestAnimationFrame(this.animate.bind(this));
     window.requestAnimationFrame(this.animate.bind(this));
-    this.render();
+    
     this.controls.update();
   }
 
   render() {
+    console.log("Rendering scene...");
     // NOTE: Update uniform data on each render.
     // this.uniforms.u_time.value += this.clock.getDelta();
     this.setSize();
