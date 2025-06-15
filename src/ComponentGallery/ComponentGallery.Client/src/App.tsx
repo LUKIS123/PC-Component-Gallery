@@ -5,6 +5,7 @@ import { ComponentsListPage } from "./features/components-list/ComponentsListPag
 import { ComponentViewPage } from "./features/component-view/ComponentViewPage";
 import { PcAssemblyPage } from "./features/assembly-view/PcAssemblyPage";
 import { PcBuildsListPage } from "./features/assembly-builds-list/PcBuildsPage";
+import { CategoriesListPage } from "./features/categories-list/CategoriesListPage";
 
 export function App() {
   return (
@@ -19,6 +20,7 @@ export function App() {
           />
           <Route path="/pcBuilds" element={<PcBuildsListPage />} />
           <Route path="/pcAssembly/:pcBuildId" element={<PcAssemblyPage />} />
+          <Route path="/categoriesList" element={<CategoriesListPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

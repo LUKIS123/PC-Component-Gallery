@@ -4,5 +4,5 @@ export interface ComponentDetails {
   description: string;
   imageUrl: string;
   price: number;
-  specification: [key: string, value: string][];
+  specification: Map<string, string>;
 }
