@@ -30,9 +30,6 @@ function Scene() {
           if (node instanceof THREE.Mesh) {
             node.material.needsUpdate = true;
           }
-          if (node instanceof THREE.Object3D && !node.parent) {
-            gltf.scene.add(node);
-          }
         });
 
         // Compute the bounding box of the loaded model
